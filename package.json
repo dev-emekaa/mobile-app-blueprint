@@ -1,6 +1,6 @@
 {
   "name": "mobile-app-blueprint",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Design-to-store mobile app workflow for Claude Code — the docs come first, the design system governs every screen, the backend's api-docs drive integration, and releases go through the stores.",
   "type": "module",

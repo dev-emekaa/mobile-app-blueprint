@@ -24,9 +24,9 @@ How code moves from a pull request to the stores. The checks and runners are nam
 
 | | Development build | Staging | Production |
 | --- | --- | --- | --- |
-| **Built by** | EAS Build, by a developer or on demand | Pipeline 2, when the fingerprint changes | Pipeline 3, when the fingerprint changes |
+| **Built by** | A developer: locally with `APP_ENV=development npx expo run:ios` / `run:android` while changing native code, or EAS Build's `development` profile | Pipeline 2, when the fingerprint changes | Pipeline 3, when the fingerprint changes |
 | **Updated by** | `expo start` | Pipeline 2, EAS Update to `staging` | Pipeline 3, EAS Update to `production` |
-| **Distributed by** | Internal distribution (a link) | TestFlight internal testers · Play internal track | App Store · Google Play, promoted by `/mobile-release` |
+| **Distributed by** | Installed straight onto the simulator, emulator or connected device; internal distribution (a link) for EAS builds | TestFlight internal testers · Play internal track | App Store · Google Play, promoted by `/mobile-release` |
 | **Identity** | `{bundle id}.dev` | `{bundle id}.staging` | `{bundle id}` |
 | **Env values** | EAS `development` environment | EAS `staging` environment | EAS `production` environment, separate values |
 | **Error tracking** | Sentry `development` | Sentry `staging` | Sentry `production` |

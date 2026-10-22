@@ -53,7 +53,7 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 
 | Need | Local | Development build | Staging | Production |
 | --- | --- | --- | --- | --- |
-| The app | `expo start` into a development build on a simulator, emulator or device | EAS Build, `development` profile: a dev client, internal distribution | EAS Build, `staging` profile, internal distribution: TestFlight internal testers and the Play internal track | EAS Build, `production` profile: App Store and Google Play |
+| The app | `expo start` into a development build on a simulator, emulator or device | A dev client, built locally with `npx expo run:ios` / `run:android` while changing native code (with `APP_ENV=development`, so it gets the `.dev` identity), or through EAS Build's `development` profile for a physical iPhone, a teammate, or a machine without Xcode | EAS Build, `staging` profile, internal distribution: TestFlight internal testers and the Play internal track | EAS Build, `production` profile: App Store and Google Play |
 | App identity | the development build's | `{bundle id}.dev`, "{Name} Dev" | `{bundle id}.staging`, "{Name} Staging" | `{bundle id}`, "{Name}" |
 | OTA channel | — | `development` | `staging` | `production`, after `production-smoke` |
 | Backend API | Mock mode, passing un-mocked units through to staging | Mock mode, passing through to staging | Staging backend; mock mode with passthrough while any unit is un-integrated | Production backend, direct |
