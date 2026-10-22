@@ -31,7 +31,7 @@ One path. A screen renders a query hook → the hook calls `apiFetch` → `apiFe
 
 ```
 app.config.ts                   native configuration per environment (APP_ENV): identity, icons, plugins, runtime version
-eas.json                        build profiles: development, staging, production; submit profiles
+eas.json                        build profiles: development, staging, production, e2e — each with its update channel; submit profiles
 .maestro/                       E2E flows, one file per journey, and README.md listing them
 assets/                         app icon, adaptive icon, splash, fonts
 src/
@@ -64,6 +64,7 @@ src/
       api-fetch.ts              apiFetch: bearer header, single-flight refresh-and-retry
     auth/
       session.ts                the access token in memory, the refresh token in SecureStore, sign-in and sign-out
+      paths.ts                  the backend's auth paths, corrected at integration
     query-client.ts             QueryClient, defaults, online and focus managers
     storage.ts                  the MMKV instance and the Zustand storage adapter
     notifications.ts            push permission and push-token registration

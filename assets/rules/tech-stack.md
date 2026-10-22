@@ -66,6 +66,6 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 - **Environment variables are baked in at build.** `EXPO_PUBLIC_API_URL` and the rest differ per environment, so each environment is its own build, and an over-the-air update carries the values of the environment it was published to.
 - **An update only reaches a compatible build.** The runtime version is the native fingerprint, so a JS-only update is applied by every build with the same native code and ignored by every other.
 - **Custom domains matter less than on the web.** The app authenticates with a bearer token, not cookies, so it talks to the API at any URL. Universal and app links need the product's web domain to serve the `.well-known` files `security` describes.
-- **Sentry** receives source maps from EAS Build and EAS Update, scrubs what `security` says, and alerts on new issues per environment.
+- **Sentry** receives source maps from EAS Build and from the upload step after each update, scrubs what `security` says, and alerts on new issues per environment.
 - **Media** is uploaded straight to the backend's bucket with presigned URLs the backend issues, and served from its CDN through `expo-image`; the app never holds storage credentials.
 - **Expo's own agent skills** (`github.com/expo/skills`) may be installed beside these for SDK upgrades; they do not replace these rules.
