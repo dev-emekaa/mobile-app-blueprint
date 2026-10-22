@@ -25,7 +25,7 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 | Session | Access token in memory, refresh token in SecureStore; `apiFetch` refreshes. The backend issues and rotates both |
 | Forms · validation | React Hook Form · Zod, through `@hookform/resolvers` |
 | Environment variables | `@t3-oss/env-core` with Zod and `runtimeEnvStrict`, each `EXPO_PUBLIC_` variable referenced statically so Expo inlines it: validated at startup, set per environment in EAS |
-| Mocking | MSW (`msw/native`) for tests · this app's in-process mock handlers for the build-before-integration phase (`coding-standards` → Mock mode) |
+| Mocking | MSW (`msw/node`) in Jest · this app's in-process mock handlers for the build-before-integration phase (`coding-standards` → Mock mode) |
 | Dates | `date-fns` |
 | Images | `expo-image`: caching, placeholders, transitions |
 | Fonts | `expo-font`: Google Fonts through `@expo-google-fonts/*`, other open-source fonts as files in `assets/fonts/` |
@@ -34,15 +34,15 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 | Haptics | `expo-haptics`, as `DESIGN.md` → Motion specifies |
 | Push notifications | `expo-notifications`: permission, the Expo push token, foreground presentation, taps. The backend sends them |
 | Deep links | `expo-linking` with Expo Router: a custom scheme, plus universal links (iOS) and app links (Android) |
-| Sign-in providers | `expo-apple-authentication` · `expo-auth-session` with `expo-web-browser` for Google and other OAuth providers, PKCE in the system browser · `expo-local-authentication` for biometric unlock, where the product uses it |
+| Sign-in providers | `expo-apple-authentication` · `@react-native-google-signin/google-signin` for Google (native, returns an identity token) · `expo-auth-session` with `expo-web-browser`, PKCE in the system browser, for other OAuth providers · `expo-local-authentication` for biometric unlock, where the product uses it |
 | Payments | `react-native-purchases` (RevenueCat) for digital goods and subscriptions, as the stores require; without RevenueCat, `expo-iap` with the backend verifying purchases directly · `@stripe/stripe-react-native` for physical goods and services |
 | Real-time | SSE through `expo/fetch` streaming · WebSocket through React Native's `WebSocket`, or the Socket.IO client where the backend uses Socket.IO — as the api-docs specify |
 | Over-the-air updates | `expo-updates` through EAS Update, `runtimeVersion` on the `fingerprint` policy |
 | Splash and icons | `expo-splash-screen` · app icon, adaptive icon and splash per environment from `app.config.ts` |
-| Error tracking | `@sentry/react-native`, with its Expo config plugin |
+| Error tracking | `@sentry/react-native`, with its Expo config plugin; source maps uploaded by EAS Build, and by a separate upload step after each `eas update` |
 | Product analytics *(optional)* | `posthog-react-native`. The `analytics` rule applies when it is installed |
 | Lint · format · types | ESLint (`eslint-config-expo`, `eslint-plugin-testing-library`) · Prettier with `prettier-plugin-tailwindcss` · `tsc` |
-| Package manager | pnpm, with a committed lockfile and the `.npmrc` settings Expo's pnpm guide requires |
+| Package manager | pnpm, with a committed lockfile; its settings — the supply-chain ones `security` requires and any Expo's pnpm guide requires — in `pnpm-workspace.yaml` |
 | Unit and integration tests | Jest with the `jest-expo` preset · React Native Testing Library · MSW |
 | E2E and smoke tests | Maestro, flows in `.maestro/` |
 | Bundle analysis | Expo Atlas, run by hand |
@@ -55,7 +55,7 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 | --- | --- | --- | --- | --- |
 | The app | `expo start` into a development build on a simulator, emulator or device | A dev client, built locally with `npx expo run:ios` / `run:android` while changing native code (with `APP_ENV=development`, so it gets the `.dev` identity), or through EAS Build's `development` profile for a physical iPhone, a teammate, or a machine without Xcode | EAS Build, `staging` profile, internal distribution: TestFlight internal testers and the Play internal track | EAS Build, `production` profile: App Store and Google Play |
 | App identity | the development build's | `{bundle id}.dev`, "{Name} Dev" | `{bundle id}.staging`, "{Name} Staging" | `{bundle id}`, "{Name}" |
-| OTA channel | — | `development` | `staging` | `production`, after `production-smoke` |
+| OTA channel | — | `development` | `staging` | `production` |
 | Backend API | Mock mode, passing un-mocked units through to staging | Mock mode, passing through to staging | Staging backend; mock mode with passthrough while any unit is un-integrated | Production backend, direct |
 | Error tracking | — | Sentry, `development` environment | Sentry, `staging` environment | Sentry, `production` environment |
 | Analytics *(optional)* | — | — | PostHog, staging project | PostHog, production project |

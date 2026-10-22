@@ -80,7 +80,7 @@ src/
     global.css                  Tailwind theme: the DESIGN.md tokens as @theme variables
 ```
 
-**Dependency direction:** `lib` ← `components` ← `hooks` ← `features` ← `app`. Nothing imports upward, and a feature never imports another feature's internals: cross-feature use goes through the other feature's `index.ts`, and a component needed by two features moves to `components/shared/`.
+**Dependency direction:** `lib` ← `components` ← `hooks` ← `features` ← `app`. Nothing imports upward — the one exception is `core`'s mock dispatch, which loads `src/mocks` by dynamic import outside production — and a feature never imports another feature's internals: cross-feature use goes through the other feature's `index.ts`, and a component needed by two features moves to `components/shared/`.
 
 **Routes stay thin.** A file in `app/` renders a screen from a feature and nothing else. Screens, hooks and schemas live in `features/`. A screen that belongs to several areas lives in the area whose entity's lifecycle it advances, as the screen specs decide. Folders are always feature areas: a later phase's feature puts each of its screens in the area it belongs to, never in a folder named after the feature.
 
@@ -119,7 +119,7 @@ Before a unit is integrated, its screens run on mock data that goes **through th
 - **Mock auth** (`src/mocks/auth.ts`) handles sign-in, sign-out, refresh and `me` until the sign-in unit is integrated: it returns JWT-shaped tokens carrying the same claims the backend's tokens carry, through the same `session` module, so `apiFetch` and the route guards run unchanged. The sign-in unit's own `mocks/` replaces it when that unit is built, and that unit's integration removes it.
 - **Real-time channels are not mocked.** In mock mode a screen that would subscribe polls its query against handler state instead; the real SSE or WebSocket channel is wired at integration, as the api-docs specify.
 - **Production builds carry no mock mode.** `app.config.ts` refuses a production build with the mode on, `core` imports the mock module only outside production, and a test proves the mode is ignored when `APP_ENV` is `production`.
-- **A unit not yet `Integrated` is unreachable in production.** Once the app is in the stores, a later phase's built-but-not-integrated screens land on `main` before their endpoints exist. Each feature's `index.ts` exports its readiness; the shell renders a unit's routes and navigation entries behind `Stack.Protected guard={isIntegrated(area) || !isProduction}`; `/mobile-integrate` flips the readiness when the unit is integrated; and a test proves no un-integrated route is reachable with `APP_ENV=production`.
+- **A unit not yet `Integrated` is unreachable in production.** Once the app is in the stores, a later phase's built-but-not-integrated screens land on `main` before their endpoints exist. Each feature's `index.ts` exports its readiness; the shell renders a unit's routes and navigation entries behind its navigator's `.Protected` (`Stack.Protected`, `Tabs.Protected`) with `guard={isIntegrated(area) || !isProduction}`; `/mobile-integrate` flips the readiness when the unit is integrated; and a test proves no un-integrated route is reachable with `APP_ENV=production`.
 - The same handlers feed MSW in tests through `src/mocks/msw.ts`. Integration removes the handlers for the unit's endpoints; the fixtures stay for tests.
 
 ## 4. Data layer
@@ -142,13 +142,13 @@ The backend issues, rotates and checks tokens. The app carries them and triggers
 | Access (JWT, minutes) | Memory, in `lib/auth/session.ts` | Dies with the process; read synchronously on every request |
 | Refresh (opaque, days) | SecureStore, `WHEN_UNLOCKED_THIS_DEVICE_ONLY` | Survives restarts; encrypted by the OS; never backed up |
 
-- **Launch:** the splash stays up while `session` reads the refresh token, refreshes, and `useMe` resolves. A missing or rejected refresh token means signed out; no screen renders on an unverified session.
+- **Launch:** the splash stays up while `session` reads the refresh token, refreshes, and `useMe` resolves. A missing or rejected refresh token means signed out; no screen renders on an unverified session. A network failure is neither: the refresh token stays, the signed-in shell renders in its offline state (from the persisted cache where it is on), and the refresh runs when the connection returns. The splash waits for the refresh no longer than the startup budget.
 - **Foreground:** returning from the background refreshes if the access token is within a minute of expiry, reading `exp` without verifying it — the backend verifies.
 - **`apiFetch`** refreshes single-flight: when several requests fail together, they wait on one shared refresh. It skips the logic for the refresh route itself. If the refresh fails, it signs out.
 - **Sign-out** calls the backend, then clears in this order: the access token, the refresh token in SecureStore, the query cache and any persisted cache, the push token (unregistered with the backend first), and persisted stores that hold the user's data. Then it navigates to sign-in. Sign-in clears the query cache too, so the next user never sees the previous one's data.
 - **Route guards** live in the root layout, which declares both groups: `<Stack.Protected guard={isSignedIn}>` around the `(app)` screen and the inverse around `(auth)`, with `redirectTo` where the SDK offers it. A guard inside the protected group itself would leave Expo Router nothing to fall back to. **A guard is a convenience, never authorization**: the backend decides access on every request.
 - **Current user:** one `useMe` query. Its roles show or hide UI through `RoleGate`; the backend enforces them.
-- **Sign in with Apple and Google** run in the system browser or the native Apple sheet, never in a WebView, and hand the backend an identity token; the backend creates the session. Biometric unlock, where the product uses it, gates reading the refresh token and nothing else.
+- **Sign in with Apple and Google** run through their native SDKs (other providers through the system browser with PKCE), never in a WebView, and hand the backend an identity token; the backend creates the session. Biometric unlock, where the product uses it, gates reading the refresh token and nothing else.
 
 ## 6. Routing and screens
 
@@ -228,7 +228,7 @@ No React Context for state that changes often; it re-renders every consumer. Con
 - **Images through `expo-image`** with explicit sizes, `contentFit`, a placeholder from the design system and caching on. Formats and sizes come from `DESIGN.md` → Imagery; the backend's CDN serves the right size, the app never downsizes a large image itself.
 - **Fonts through `expo-font`**, loaded before the splash hides, as `DESIGN.md` names them.
 - **Startup is budgeted**: the splash hides when fonts and the session are ready and not before; nothing else blocks it. Time to first interactive screen on a mid-range Android stays under the budget `CLAUDE.md` records (default 2 seconds, measured on a release build).
-- **The JS thread stays free during interaction**: no heavy computation in render, no synchronous storage reads in lists, long work in `InteractionManager.runAfterInteractions` or on the UI thread.
+- **The JS thread stays free during interaction**: no heavy computation in render, no synchronous storage reads in lists, long work deferred with `requestIdleCallback` or moved to a worklet on the UI thread (`InteractionManager` is removed in SDK 58).
 - **`memo`, `useMemo` and `useCallback` are applied where a profile shows the cost**, not by habit. React Compiler is on and makes most of them redundant.
 - **Lists are virtualised** (Section 12) and paginated as the api-docs allow.
 - **The bundle is checked** with Expo Atlas when a dependency is added, and a release's JS bundle stays under the budget `CLAUDE.md` records (default 4 MB). A native dependency is a decision: it forces a store build.
@@ -263,7 +263,7 @@ No React Context for state that changes often; it re-renders every consumer. Con
 
 What tests must prove is in `testing`. In this stack:
 
-- Jest with the `jest-expo` preset, React Native Testing Library and its `user-event`; MSW (`msw/native`) started in `jest.setup.ts` from the shared handlers, with `onUnhandledRequest: 'error'`.
+- Jest with the `jest-expo` preset, React Native Testing Library and its `user-event`; MSW (`msw/node`; Jest runs in Node) started in `jest.setup.ts` from the shared handlers, with `onUnhandledRequest: 'error'`.
 - Test files sit beside the code (`order-summary.test.tsx`); Maestro flows in `.maestro/`.
 - Tests render through the real providers via a `renderWithProviders` helper (a fresh `QueryClient` with retries off, safe-area and keyboard providers with fixed metrics, the theme).
 - Native modules without a JS implementation in Jest (SecureStore, notifications, haptics) are mocked once in `jest.setup.ts`, never per test, and never our own modules.

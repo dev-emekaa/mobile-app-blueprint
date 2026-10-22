@@ -142,7 +142,7 @@ These install into `.claude/rules/`, loaded at the start of every session — ex
 - **`coding-standards.md`** — the architecture (Expo renders, TanStack caches, the backend decides), the folder structure and dependency direction, the HTTP client and error handling with offline as a state, mock mode, the data layer, the session and token lifecycle, routing and deep links, components, state, forms with the keyboard, effects, styling with the adaptive baseline for large screens, lists, animation and haptics, performance and startup, platform behaviour (permissions, push, minimum version, background), errors, code style, tests in this stack.
 - **`security.md`** — tokens and sessions, device storage, transport, deep links and inbound data, permissions, environment and secrets, third-party SDKs, payments, updates and supply chain, errors, personal data and store compliance, and the **backend contract**: tokens in the body for the platform header, the minimum-version endpoint, push registration, account deletion and the link files, status semantics, additive changes, server-side purchase verification.
 - **`testing.md`** — static, unit, integration (the bulk, with MSW), E2E with Maestro on real builds, smoke, manual QA on a device matrix that includes an iPad in compatibility mode and a tablet in landscape; environments and data; the regression rule.
-- **`ci-cd.md`** — PR checks with `expo export` and Maestro on demand, the automatic staging deploy that builds or updates by fingerprint and moves `staging-current`, the manual production deploy of the verified commit, smoke-tested before any user receives it, rolled out gradually, with `prod-*` and `v*` tags, releasing alongside the backend, what rollback means for an update and for a store build.
+- **`ci-cd.md`** — PR checks with `expo export` and Maestro on demand, the automatic staging deploy that builds or updates by fingerprint and moves `staging-current`, the manual production deploy of the verified commit, smoke-tested on this commit's JavaScript before any user receives it, rolled out gradually, with `prod-*` and `v*` tags, the hotfix branch, releasing alongside the backend, what rollback means for an update and for a store build.
 - **`analytics.md`** *(with `--analytics`)* — the native SDK batched, explicit events named `object_action`, no personal data, identify and reset, consent, no cross-app tracking.
 
 ---
@@ -151,7 +151,7 @@ These install into `.claude/rules/`, loaded at the start of every session — ex
 
 The two repos share the docs through `pnpm docs:pull` and `pnpm docs:push`, which `/mobile-setup` installs and which read the backend repo path from `CLAUDE.md`. Pull brings the backend's docs here, including its copy of the screen specs once it owns them; `push --specs` sends one screen-spec file there and `push --handoff` sends this client's two backend-issues files (`backend-issues-mobile.md` and its `-resolved` archive — each client writes only its own). The backend's `/backend-issue-fix` reads its open entries itself, appends each resolution, and writes a client handoff message that `/mobile-issue-fix` adopts.
 
-The backend must meet the contract in `security.md` → Backend contract: its `security.md` and services rule (v1.2.0 and later) state the token, push, deletion and link-file lines from its side, its build skill the minimum-version endpoint; its api-docs document the platform and version headers and the error shapes.
+The backend must meet the contract in `security.md` → Backend contract: its `security.md` and services rule (v1.2.0 and later) state the token, push, deletion and link-file lines from its side, its build skill the minimum-version endpoint; its api-docs document the platform and version headers and the error shapes. Install the Backend Blueprint with `--store-client`, so its deprecations register exists, and have its `Client release status` set before the first store submission: that is the line after which it stops making breaking changes.
 
 Where the product also has a web client built with the Web App Blueprint, the two client repos are independent: each has its own `DESIGN.md` (the second takes the brand from the first), its own handoff file, and its own pipelines. The backend serves both.
 
@@ -172,11 +172,11 @@ It writes `dist/mobile-app-blueprint/` and `dist/mobile-app-blueprint-v{version}
 Every release is a version tag. Pushing one builds the zip and publishes it on the repo's **Releases** page:
 
 ```bash
-npm version minor        # bumps package.json, commits, and tags v1.1.0 (patch · minor · major)
+npm version minor        # bumps package.json, commits, and tags v1.2.0 (patch · minor · major)
 git push --follow-tags   # pushes the commit and the tag
 ```
 
-The zip appears under the release's **Assets** as `mobile-app-blueprint-v1.1.0.zip` — that is the file to share. The **Source code** archives GitHub adds to every release are the repo itself, not the folder version. A tag that doesn't match the `package.json` version fails the build, so the zip's name always matches its contents.
+The zip appears under the release's **Assets** as `mobile-app-blueprint-v1.2.0.zip` — that is the file to share. The **Source code** archives GitHub adds to every release are the repo itself, not the folder version. A tag that doesn't match the `package.json` version fails the build, so the zip's name always matches its contents.
 
 ---
 

@@ -45,16 +45,16 @@
 | Project name | |
 | Stack / framework | {{STACK}} |
 | Backend repo path | |
+| Sibling client repo path | the web client's repo, where one exists — its `DESIGN.md` is the brand's source |
 | Backend stack | |
 | Backend OpenAPI spec | URL, once the backend is built — blank until then |
-| Local API URL | |
 | Staging API URL | |
 | Production API URL | |
-| Web domain for links | the domain that serves the `.well-known` link files and the deletion-request page, and who owns it |
+| Web domains for links | per environment: the domains that serve the `.well-known` link files and the deletion-request page, and who owns them |
 | Bundle id · package name | `com.{company}.{product}` — `.dev` and `.staging` are derived |
 | App scheme | |
 | EAS project | the project slug and owner |
-| Update channels | `development` · `staging` · `production-smoke` · `production` |
+| Update channels | `development` · `staging` · `production` |
 | Dev server command | |
 | Test commands | |
 | E2E command | |

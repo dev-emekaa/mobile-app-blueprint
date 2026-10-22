@@ -41,7 +41,7 @@ These apply to every change.
 - **Every fix says how it ships.** JS-only changes go out over the air through the production pipeline; a change to native code, `app.config.ts`, a plugin or a native dependency changes the fingerprint and needs a store build, which `/mobile-release` takes through the stores. Say which before the fix is approved, because the second takes days and cannot be rolled back.
 - **Business rules are not reinterpreted in a fix.** A screen that enforces a limit differently from the rules is corrected to the rules; a rule that seems wrong is raised with me, not changed on the client.
 - **No new dependency** outside `tech-stack` without asking. If a fix cannot be made without one, say which requirement it fails and wait.
-- **Once the app is in the stores**, a visible change to a flow users rely on ships behind a flag or in a coordinated release, as `ci-cd` → Releasing alongside the backend says, and never breaks a build that users still run: old builds keep calling the backend for months.
+- **Once the app is in the stores**, a visible change to a flow users rely on ships behind the unit readiness switch, or a remote flag where the product has one, or in a coordinated release, as `ci-cd` → Releasing alongside the backend says, and never breaks a build that users still run: old builds keep calling the backend for months.
 
 ## 3. Per-Issue Workflow
 
@@ -92,7 +92,7 @@ A client handoff message from `/backend-issue-fix` lists items tagged `FIXED` / 
 4. **`NEW` items** are integrated only where an existing screen in this unit already needs them per its spec; a new screen is `/mobile-build`'s work.
 5. **`REMOVED` items**: delete the hooks and handlers, and anything that called them.
 6. **Background behaviour** the handoff notes (state that now changes on its own) is reflected the way `/mobile-integrate` Step 3 says.
-7. **Deprecations** the handoff lists are adopted in this build so the backend can raise the minimum version later; the report names the first app version that no longer reads the old shape.
+7. **Deprecations** the handoff lists are adopted so the backend can raise the minimum version later; the report names the first **store** version whose embedded bundle no longer reads the old shape. An adoption shipped as an update alone does not qualify, because the backend reads the native version: the floor may be raised only to a store build that contains it.
 8. Tests, verification against staging (Step 6), and the report, which names the backend commit verified.
 
 ## 5. Definition of Done

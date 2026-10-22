@@ -13,7 +13,7 @@ Read these from the project's `CLAUDE.md`. If a value isn't recorded there, ask 
 | --- | --- |
 | **Project name** · **Audience · client** | Which product and which client this repo is. |
 | **Backend repo path** | For `pnpm docs:pull` and `pnpm docs:push`. |
-| **Staging API URL** · **Local API URL** | Where the real endpoints are. Integration verifies against staging. |
+| **Staging API URL** | Where the real endpoints are. Integration verifies against staging. |
 | **API types command** | Regenerates `types/api.ts` from the backend's OpenAPI. |
 | **Test commands** · **E2E command** | Unit and integration; Maestro. |
 | **Sign-in providers** · **Payments** · **Push notifications** | Which native capabilities exist, so their backend endpoints are integrated with the unit that owns them. |

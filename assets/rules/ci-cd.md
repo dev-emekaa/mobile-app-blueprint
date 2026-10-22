@@ -33,7 +33,9 @@ How code moves from a pull request to the stores. The checks and runners are nam
 
 Which backend and mode each environment runs against is `tech-stack` → Services' table; it is not repeated here.
 
-`app.config.ts` reads `APP_ENV` and sets the identity, name, icon, scheme, update channel and plugins per environment; `eas.json` has one build profile per environment plus an `e2e` profile — release-mode simulator and emulator builds without the dev client, built with one environment's values at a time, for Maestro — `appVersionSource: remote` and `autoIncrement` on, so EAS owns the build number. The runtime version policy is `fingerprint`. The production-environment `e2e` build follows a `production-smoke` channel, so an update can be smoke-tested before any user receives it.
+`app.config.ts` reads `APP_ENV` and sets the identity, name, icon, scheme and plugins per environment; `eas.json` has one build profile per environment, each naming its update `channel`, plus an `e2e` profile — release-mode simulator and emulator builds without the dev client, built with one environment's values at a time, for Maestro — `appVersionSource: remote` and `autoIncrement` on, so EAS owns the build number. The runtime version policy is `fingerprint`.
+
+**Every Maestro run tests this commit's JavaScript.** An `e2e` build is reused by fingerprint, but a reused build carries the JavaScript it was built with, and an update downloaded at launch only runs on the next launch. So each run first repacks the fingerprint's `e2e` build with this commit's bundle (EAS Workflows' `repack` job, no native rebuild) and Maestro runs on that; only when no `e2e` build of the fingerprint exists is one built.
 
 Where the EAS plan (Production or Enterprise) includes update code signing, `updates.codeSigningCertificate` is set in `app.config.ts`, the private key lives in an EAS secret, and every `eas update` passes it.
 
@@ -44,6 +46,7 @@ Where the EAS plan (Production or Enterprise) includes update code signing, `upd
 - `ios/` and `android/` are not committed; a PR that adds them is rejected, because the fingerprint and prebuild depend on their absence.
 - Staging deploys run one at a time, in merge order, so `staging-current` never moves backwards.
 - Dependabot or Renovate PRs go through Pipeline 1 like any other; one that touches a native dependency is labelled `e2e`.
+- The `staging` and `production` GitHub environments hold the Expo token and deploy only from `main` and `hotfix/*`; labelled-PR E2E runs use a separate `e2e` environment with a token that can only build and run tests.
 
 ## Pipelines
 
@@ -51,8 +54,8 @@ GitHub Actions orchestrates all three (the release-owner check, inputs, tags); E
 
 | Pipeline | Trigger | What it does | Deploys to |
 | --- | --- | --- | --- |
-| **1. PR checks** | Pull request opened or updated against `main` | Static checks, unit and integration tests, the bundle; Maestro on an `e2e` label | Nothing |
-| **2. Staging deploy** | Push to `main` — every merge | Re-runs the checks, builds or updates staging by fingerprint, moves `staging-current`, runs the full Maestro suite | Staging |
+| **1. PR checks** | Pull request opened or updated against `main`; a push to `hotfix/*` | Static checks, unit and integration tests, the bundle; Maestro on an `e2e` label | Nothing |
+| **2. Staging deploy** | Push to `main` — every merge — except docs-only changes (`docs/**`, `*.md`); a push to `hotfix/*` | Re-runs the checks, builds or updates staging by fingerprint, moves `staging-current`, runs the full Maestro suite | Staging |
 | **3. Production deploy** | Manual — release owners only | Builds or updates production by fingerprint from the verified commit, smoke tests, rolls out gradually, tags the release | Production |
 
 ### 1. PR checks
@@ -62,7 +65,7 @@ GitHub Actions orchestrates all three (the release-owner check, inputs, tags); E
 1. Install from the lockfile, cached.
 2. In parallel: type check, lint and format check, unit and integration tests, dependency audit, `expo-doctor`.
 3. `expo export` for both platforms, to catch bundling errors without a native build.
-4. On a PR labelled `e2e` (native changes, navigation changes, anything risky): a build with the `e2e` profile — reused when one exists for the same fingerprint — and the Maestro suite on it through EAS Workflows.
+4. On a PR labelled `e2e` (native changes, navigation changes, anything risky): the `e2e` build of this fingerprint, repacked with this commit's JavaScript, and the Maestro suite on it through EAS Workflows.
 
 ### 2. Staging deploy
 
@@ -73,7 +76,7 @@ Runs automatically, one at a time in merge order.
    - **Changed:** EAS Build with the `staging` profile for both platforms, then EAS Submit to TestFlight's internal testers and the Play internal track.
    - **Unchanged:** EAS Update to the `staging` channel, with the commit as the message.
 3. Move the `staging-current` tag to this commit, only if the deploy succeeded.
-4. Run the full Maestro suite on the staging fingerprint's `e2e` build, both platforms, through EAS Workflows.
+4. Run the full Maestro suite on the staging `e2e` build of this fingerprint, repacked with this commit's JavaScript, both platforms, through EAS Workflows. Upload the update's source maps to Sentry (a separate step after `eas update`; EAS Build uploads a build's on its own).
 5. Post the result to the team channel, if there is one: commit, store build or update, pass or fail, and the changes since the last production release.
 
 **After the workflow:** manual QA runs the staging checklist on the device matrix. A red Maestro run or a failed checklist means no production deploy until fixed. When the release relies on backend changes, tell the backend which backend commit was verified; that is the backend's production sign-off.
@@ -85,17 +88,26 @@ Runs automatically, one at a time in merge order.
 1. Check the actor is a release owner; stop if not. Show on the run page what is shipping: the commit, its message, the changes since the last release, and whether it is a store build or an update.
 2. Check out the commit. Tests are not re-run: this commit already passed Pipelines 1 and 2.
 3. Compute the fingerprint and compare it with the live production build's (no live build counts as changed):
-   - **Changed — store build:** stop if `version` is missing or not higher than the last `v*` tag. EAS Build with the `production` profile and that version, then EAS Submit to App Store Connect and the Play internal track. Nothing is public yet. Build (or reuse, by fingerprint) the production-environment `e2e` build of the same fingerprint.
-   - **Unchanged — update:** EAS Update to the `production-smoke` channel at 100%, with the commit as the message. Only the `e2e` build follows that channel; no user has it.
-4. Run the Maestro smoke suite on the production-environment `e2e` build — the store build's twin, or the live build with the update applied — read-only, with the smoke account.
+   - **Changed — store build:** stop if `version` is missing or not higher than the last `v*` tag. EAS Build with the `production` profile and that version, then EAS Submit to App Store Connect and the Play internal track. Nothing is public yet.
+   - **Unchanged — update:** nothing is published yet.
+4. Run the Maestro smoke suite on the production-environment `e2e` build of this fingerprint, repacked with this commit's JavaScript — the store build's twin, or exactly what the update will carry — read-only, with the smoke account.
 5. If it fails, stop: nothing reached users. For a store build, `/mobile-release` does not promote it.
-6. If it passes: for an update, publish the same commit to the `production` channel at a 10% rollout; for a store build, `/mobile-release` takes it from here after a check on real devices. Add a permanent release tag — `prod-<date>-<time>` for an update, the `version` for a store build. The rollout stays at 10% until `/mobile-release` Step 7 raises it while the crash-free rate holds.
+6. If it passes: for an update, EAS Update to the `production` channel at a 10% rollout with the commit as the message, then the source-map upload; for a store build, `/mobile-release` takes it from here after a check on real devices. Add a permanent release tag — `prod-<date>-<time>` for an update, the `version` for a store build. The rollout stays at 10% until `/mobile-release` Step 7 raises it while the crash-free rate holds.
 
 ## Releasing alongside the backend
 
 - A release that needs new endpoints waits for the backend's production deploy, then ships. Order: backend, then the app, always.
-- A breaking backend change is coordinated through the backend's deprecation machinery: the backend tolerates both shapes across the window, the app ships a build that reads the new one, and the backend raises the minimum supported version per platform only when that build is live in that platform's store and old builds have stopped calling. Installed builds run for months, so the window is never short.
+- A breaking backend change is coordinated through the backend's deprecation machinery: the backend tolerates both shapes across the window, the app ships a **store build** whose embedded bundle reads the new one, and the backend raises the minimum supported version per platform only to that build, once it is live in that platform's store and old builds have stopped calling. An update alone never qualifies: it does not change the native version the backend reads, and a build that has not yet applied it still runs the old bundle. Installed builds run for months, so the window is never short.
 - The release notes name the backend commit the release was verified against.
+
+## Hotfixes
+
+`main` usually holds unreleased work, some of it native, so a fix for the live release cannot simply ride `main`: its fingerprint may no longer match the live build, and every unreleased merge would ship with it.
+
+1. Branch `hotfix/vX.Y.Z` from the live release tag (`v*` for a store build, `prod-*` for an update) and cherry-pick the fix; the same fix is merged to `main` through a normal PR.
+2. A push to `hotfix/*` runs Pipeline 2 against that branch: checks, then an update to the staging build of the live fingerprint, the Maestro suite on the repacked `e2e` build, the manual checklist reduced to the flows the fix touched. It never moves `staging-current`.
+3. Pipeline 3 is run with that commit's SHA. A JS-only fix ships as an update, usually within the hour; a native fix is a store build through the same steps, with an expedited review where the stores grant one.
+4. The branch is deleted once the fix is live and on `main`.
 
 ## Tags
 

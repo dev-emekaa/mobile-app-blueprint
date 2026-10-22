@@ -32,7 +32,7 @@ Coverage is read to find untested logic, never enforced as a percentage.
 | **Device** | — | Jest's React Native environment | An iOS simulator and an Android emulator in CI | The device matrix below; a store build is checked on real devices by `/mobile-release` |
 
 - **Automated tests never touch production data.** Production smoke tests are read-only, with a dedicated low-privilege account, on the production-environment `e2e` build.
-- **E2E tests depend on the backend's seed**, reset through its reseed dev-tool endpoint before the suite runs. A test that creates data cleans it up or uses a record the seed marks as disposable.
+- **E2E tests depend on the backend's seed.** They use the records the seed marks as disposable and clean up what they create; they never reseed staging on their own, because manual QA and the backend's own verification share it. A reseed is asked for, through the backend's reseed dev-tool endpoint, when the seed has drifted.
 - **Integration tests start from the shared mock handlers** so a screen is tested against the same shapes it was built on; a test that needs a different response overrides the one handler it needs.
 
 ## Unit tests
@@ -52,7 +52,7 @@ Coverage is read to find untested logic, never enforced as a percentage.
 
 ## E2E tests
 
-- **Critical journeys only:** sign-in (including Sign in with Apple and Google where offered, through the sandbox accounts), the primary flow of each feature area, purchase or checkout where there is one (with the stores' sandbox testers), a push notification tap, a universal link, and anything that would make the product unusable if broken. The list is kept in `.maestro/README.md` with the reason each journey is there.
+- **Critical journeys only:** sign-in with email (the Apple and Google sheets are not reliably automatable on simulators; they are in `/mobile-release`'s device check), the primary flow of each feature area, purchase or checkout where there is one (with the stores' sandbox testers), a push notification tap, a universal link, and anything that would make the product unusable if broken. The list is kept in `.maestro/README.md` with the reason each journey is there.
 - **Against a built app, never the dev server:** the `e2e` profile's simulator and emulator builds — release mode, no dev client, one per environment's values — for every suite. Flows select by accessibility label or visible text; a `testID` only where no label exists.
 - **Both platforms:** every flow runs on iOS and Android; a flow that needs a platform step (the Apple sheet, the Android back button) branches on the platform rather than skipping one.
 - **Stable by design:** waits on visible elements, no fixed sleeps. A flaky test is fixed, not retried until it passes.

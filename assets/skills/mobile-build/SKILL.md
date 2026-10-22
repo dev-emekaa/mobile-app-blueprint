@@ -122,7 +122,7 @@ Screens are built one unit at a time; the navigation they sit in is not. Before 
 - **The shell:** the tab bar and headers per `DESIGN.md`, where search, notifications and the account entry live, and how the shell behaves on a tablet running the phone layout.
 - **Global patterns the units will share:** the list screen anatomy, the detail screen anatomy, the create/edit pattern (screen, modal or sheet), the confirmation pattern, where errors and toasts appear, pull to refresh, the permission-request pattern, the offline state.
 
-Design the shell and one example of each global pattern on the canvas, and **wait for my approval**. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker's notes record it as done, and it is delivered as a PR per Step 12.
+Design the shell and one example of each global pattern on the canvas, and **wait for my approval**. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker (created at the session's opening, Section 8) records it as done in its notes, and it is delivered as a PR per Step 12.
 
 ---
 
@@ -133,7 +133,7 @@ Design the shell and one example of each global pattern on the canvas, and **wai
 #### Step 1 — Select and scope
 
 - Run `pnpm docs:pull` so the docs are current, and commit what it changed.
-- Confirm in the UI tracker that the unit is `Ready` and the one above it is at least `Designed` (or, in whole-phase build mode, that every unit in scope is `Designed`). **Never design from a `Draft` row.** If the tracker does not exist yet, create it now from `feature-areas` (first phase) or the backend's `docs/phase-{n}/implementation-order.md` (later phase), one row per unit, all `Draft` until their docs exist, and commit it. At the start of every session, advance any `Draft` row whose Readiness condition is now met to `Ready` with the date — first phase: its business rules and app flows exist; later phase: the backend's review has cleared it.
+- Confirm in the UI tracker that the unit is `Ready` and the one above it is at least `Designed` (or, in whole-phase build mode, that every unit in scope is `Designed`). **Never design from a `Draft` row.** If the tracker does not exist yet, create it now from `feature-areas` (first phase) or the backend's `docs/phase-{n}/implementation-order.md` (later phase), one row per unit, all `Draft` until their docs exist, and commit it. At the start of every session, advance any `Draft` row whose Readiness condition is now met to `Ready` with the date — first phase: its business rules and app flows exist; later phase: the review has settled its rules and flows with no open founder decision (the backend's `implementation-order.md` may still read `Draft` until its screens are reviewed; that is expected, since this repo writes the screens).
 - Read everything in Section 2.1 for this unit.
 - In a later phase: read the existing screen specs for every area the feature touches, and open the built screens' code, so every change is made to the real current screen. Apply the review's frontend actions.
 - Identify **prerequisites**: screens from other units this unit links to (a detail screen a list links into), shared components that must exist, auth states the flows assume. If a prerequisite is unbuilt, say so before starting rather than stubbing around it.
@@ -250,7 +250,7 @@ When the walk passes, mark the unit `Built` with the date and commit.
   - **Tests** — counts per layer, and confirmation that earlier units' suites pass.
   - **Verification** — the Step 10 walk passed, with what it caught.
   - **Open questions or deferred items**, if any.
-- **Native code added**, if any, because it forces a store build.
+  - **Native code added**, if any, because it forces a store build.
 - **Deliver it as a PR.** Create a branch off `origin/main`, push to it, and give me the link. Never create the PR yourself. Merging deploys to staging per `ci-cd` — an update, or a store build to TestFlight and the internal track when native code changed — where the unit runs in mock mode until it is integrated.
 
 ---
@@ -292,6 +292,6 @@ Before Step 1, in a few lines:
 
 1. **State the phase, the unit and the stage** — design, build, or both; or whole-phase build. If I haven't said, take the next unit in the tracker through its next stage.
 2. **State the project values** from `CLAUDE.md` that change what you do: production status, tablet support, which native capabilities are on, whether the canvas, Mobbin and image generation are available, which stock photo providers are configured. Ask for any that are missing.
-3. **Say whether Phase 0 is done.** If the information architecture and shell are not approved and built, we start there.
+3. **Say whether Phase 0 is done.** If the information architecture and shell are not approved and built, we start there — after creating the UI tracker if it does not exist yet, as Step 1 describes.
 
 Then go to Step 1. Do not summarise the workflow back to me — start it.
