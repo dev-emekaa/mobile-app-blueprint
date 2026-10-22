@@ -1,0 +1,28 @@
+{
+  "name": "mobile-app-blueprint",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Design-to-store mobile app workflow for Claude Code — the docs come first, the design system governs every screen, the backend's api-docs drive integration, and releases go through the stores.",
+  "type": "module",
+  "bin": {
+    "mobile-app-blueprint": "bin/install.mjs"
+  },
+  "scripts": {
+    "package": "node scripts/build-folder.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "assets",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-emekaa/mobile-app-blueprint.git"
+  },
+  "license": "UNLICENSED",
+  "author": "dev-emeka"
+}
