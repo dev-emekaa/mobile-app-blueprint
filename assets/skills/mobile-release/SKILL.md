@@ -83,7 +83,7 @@ Run the production deploy (`ci-cd` → Pipeline 3) with the version, or ask me t
 
 ### Step 4 — Device check → **wait for my approval**
 
-Only a person can install a build on a real device, so this check is yours: I give you the checklist below per device, you run it on the device matrix from `testing` with the build from TestFlight and the internal track, against the production backend with the review account, and report what you saw; I record it and present it.
+Only a person can install a build on a real device, so this check is mine: you give me the checklist below per device, I run it on the device matrix from `testing` with the build from TestFlight and the internal track, against the production backend with the review account, and report what I saw; you record it and present it.
 
 - the staging checklist's flows, read-only where they would create real data;
 - a cold start and the startup budget on the mid-range Android;
@@ -92,14 +92,14 @@ Only a person can install a build on a real device, so this check is yours: I gi
 - the force-update screen, by pointing a device at a test minimum version if the backend offers one;
 - light and dark, 200% font scaling, the iPad in compatibility mode and the tablet in landscape.
 
-**Present the check in the chat** from your report, device by device, and end with anything that failed. A failure goes to `/mobile-issue-fix`, and the release starts again from Step 3 with the fix.
+**Present the check in the chat** from my report, device by device, and end with anything that failed. A failure goes to `/mobile-issue-fix`, and the release starts again from Step 3 with the fix.
 
 ### Step 5 — Submit → **wait for my approval**
 
 With the check passed:
 
 1. **App Store Connect:** attach the build to the new version, enter the release notes, set the release to **manual** so both platforms can go live together, turn **phased release** on, answer the export-compliance and advertising questions as `compliance.md` says, and write the review notes: the review account, how to reach each gated feature, and what a reviewer might misread. Submit.
-2. **Google Play:** promote the build from the internal track to **production** with a **staged rollout** at 10%, enter the release notes, confirm the Data safety and content-rating answers match `compliance.md`. Submit for review, with **managed publishing** on, so the release goes live when you say and both platforms can go together.
+2. **Google Play:** promote the build from the internal track to **production** with a **staged rollout** at 10%, enter the release notes, confirm the Data safety and content-rating answers match `compliance.md`. Submit for review, with **managed publishing** on, so the release goes live when I say and both platforms can go together.
 3. Record the submission in `docs/release/releases/vX.Y.Z.md`: build numbers, the commit, the backend commit, what changed, and the time.
 
 ### Step 6 — Review outcome
