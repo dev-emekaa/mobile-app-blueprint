@@ -20,6 +20,7 @@ Read these first; ask for anything missing.
 | Business rules and app flows, `docs/business-rules/`, `docs/app-flows/` | The states screens need (pending, failed, expired), the data types that recur (money, dates, statuses), the roles and how different their worlds are |
 | `CLAUDE.md` | The audience this repo serves, whether a second audience shares the brand, tablet support, and which native capabilities (push, payments, biometrics) the system must give a pattern to |
 | Brand assets, if any | The logo system, where one exists (the Ideas Blueprint produces one), brand colors, a name, a tagline. The logo's color and geometry are inputs to the palette and shape language, not the other way round |
+| My screenshots in `docs/design/references/`, if any | Screens I picked from products I admire — the most direct statement of what I want. Optional; never committed |
 | Another client's `DESIGN.md` for the same product, if one exists (at the sibling client repo path in `CLAUDE.md`) | The brand decisions — palette, type, voice, shape — are taken from it so the product looks like itself on every client; the mobile components, patterns and motion are this system's own |
 | An existing `DESIGN.md` | In a later phase: extend it, never regenerate it |
 
@@ -42,13 +43,16 @@ Before any color is picked, write down, in a few lines each:
 
 The goal is to learn what the best products in this space do well and why, then do it our own way. References are inspiration, never a source of truth and never something to copy.
 
-**On Mobbin** (through its MCP, `platform: ios` and `platform: android`; follow the Mobbin search skill if it is installed):
+**Choose them:** **three to five direct competitors or neighbours** named in the brief, and **two or three category leaders** whose interface is widely admired, in the product's category or a close one (a dense tool learns from the best dense tools, whatever their domain). For each, look at the actual screens — the images, not the metadata — of the surfaces this product will have: onboarding, the main list, the main detail, a form, the tab bar and navigation, a sheet, an empty state, a permission request, settings. Look at both platforms where the app has both.
 
-1. Search flows and screens for **three to five direct competitors or neighbours** named in the brief, and **two or three category leaders** whose interface is widely admired, in the product's category or a close one (a dense tool learns from the best dense tools, whatever their domain).
-2. For each, look at the actual screens — the images, not the metadata — of the surfaces this product will have: onboarding, the main list, the main detail, a form, the tab bar and navigation, a sheet, an empty state, a permission request, settings. Look at both platforms where the app has both.
-3. Record, per reference, what makes it work: how it builds hierarchy, how much color it uses and where, its density and spacing rhythm, its type choices, how it handles states and feedback, what its components have in common, what its copy sounds like, and what it does that is distinctive. Also what it does badly, so we avoid it.
+**Where to see them** is set by the `Design references` row of `CLAUDE.md` (called `Design reference library` in projects set up before it; rename it when you meet it). If Mobbin isn't connected and the row doesn't say what to use instead, ask me once — web research, my screenshots, or both — and record the answer in the row; if I'm not there to answer, record and use web research plus any screenshots in the folder. A missing library never stops the work. Use what the row allows, in this order:
 
-**Outside Mobbin**, where it helps: the products' own marketing sites. Where the direction draws on a product documented in the corpus at `github.com/VoltAgent/awesome-design-md`, that product's DESIGN.md shows its exact decisions; learn from it, never copy. Cite everything you looked at.
+1. **My screenshots**, if `docs/design/references/` holds any. They are optional: screens I picked from products I admire, so they say most directly what I want. Look at every one. The folder is never committed — confirm `.gitignore` lists `docs/design/references/` and add it if not — because the images are other companies' and may show personal data; the docs record what each one taught and its file name, never the image.
+2. **Mobbin**, when connected (through its MCP, `platform: ios` and `platform: android`; follow the Mobbin search skill if it is installed).
+3. **Web research**, when Mobbin isn't connected or leaves a gap: the chosen products' App Store and Google Play listings, whose screenshots show the real app on each platform, and their own sites and help-center articles, opened in a browser so you see the screens themselves, not marketing illustrations.
+4. **None of these available:** build the direction from the brief and Apple's Human Interface Guidelines and Material Design, and say so in the report.
+
+**Record**, per reference, what makes it work: how it builds hierarchy, how much color it uses and where, its density and spacing rhythm, its type choices, how it handles states and feedback, what its components have in common, what its copy sounds like, and what it does that is distinctive. Also what it does badly, so we avoid it. Where the direction draws on a product documented in the corpus at `github.com/VoltAgent/awesome-design-md`, that product's DESIGN.md shows its exact decisions; learn from it, never copy. Cite everything you looked at — its link, or the screenshot's file name.
 
 **Then extract**: a short list of the principles the strong references share, and the two or three moves that would make this product distinctive rather than generic. That list is what the system is built from.
 

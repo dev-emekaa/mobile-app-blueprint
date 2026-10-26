@@ -62,7 +62,7 @@
 | Docs sync commands | |
 | Design system | not written yet — `/design-system` updates this |
 | Design canvas | /design (Claude Design in Claude Code) |
-| Design reference library | Mobbin, through its MCP |
+| Design references | Mobbin, through its MCP, when connected. Without it: — *(web research, your screenshots, or both; asked once if blank)*. Your own screenshots, if any, go in `docs/design/references/` (optional, never committed) |
 | Image generation | Gemini, through its MCP |
 | Stock photo providers | Unsplash / Pexels — which are configured; their keys live in `.env` |
 | Analytics | off |
