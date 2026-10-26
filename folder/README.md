@@ -1,8 +1,8 @@
 # Mobile App Blueprint
 
-A docs-first workflow for designing, building, integrating and releasing mobile apps with Claude Code. Seven skills and the rules they follow take a product from its requirements to a designed, built, tested, integrated and store-released Expo app for iOS and Android — and every screen traces back to a reviewed document and an approved design.
+Design, build and release a product's iOS and Android app with Claude Code, connected to the real backend. Every screen follows one design system; each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints. Releases go out as over-the-air updates or through the App Store and Google Play. Seven skills and the rules behind them, for Expo · React Native · TypeScript · Tailwind CSS (Uniwind) · React Native Reusables · TanStack Query, built and shipped through EAS.
 
-It is a frontend half of a pair. The **Backend Blueprint** writes the product docs this one reads (feature areas, business rules, app flows, api-docs) and reads the screen specs this one writes. The stack is **Expo · React Native · TypeScript · Tailwind CSS (Uniwind) · React Native Reusables · TanStack Query**, built and shipped through EAS.
+It works with the **Backend Blueprint**: it reads the backend's product docs and API docs, and sends back screen specs and issues.
 
 ---
 

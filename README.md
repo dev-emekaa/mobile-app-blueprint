@@ -1,8 +1,10 @@
 # mobile-app-blueprint
 
-**Design-to-store mobile app workflow for Claude Code — the docs come first, the design system governs every screen, the backend's api-docs drive integration, and releases go through the stores.**
+**Design, build and release a product's iOS and Android app with Claude Code, connected to the real backend.**
 
-Seven Claude Code skills and the rules they depend on, installed into an Expo project as one pipeline: set up the foundation, write the design system, design and build each feature area's screens on mock data for iOS and Android, spec them for the backend, integrate the real endpoints, fix what breaks, and take each release through TestFlight, the Play tracks and review. It is a frontend half of a pair: the [Backend Blueprint](https://github.com/dev-emekaa/backend-blueprint) writes the product docs this one reads, and reads the screen specs this one writes. The [Web App Blueprint](https://github.com/dev-emekaa/web-app-blueprint) is its sibling for the web client of the same product, and the [Ideas Blueprint](https://github.com/dev-emekaa/ideas-blueprint) produces the brief, PRD and logo both start from.
+Every screen follows one design system. Each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints as they're ready. Releases go out as over-the-air updates or through the App Store and Google Play. Seven Claude Code skills and the rules behind them, for Expo.
+
+**Works with** the [Backend Blueprint](https://github.com/dev-emekaa/backend-blueprint), which it is a client of: it reads the backend's product docs and API docs, and sends back screen specs and issues.
 
 ```bash
 npx github:dev-emekaa/mobile-app-blueprint init
@@ -20,164 +22,159 @@ npx github:dev-emekaa/mobile-app-blueprint init [options]
 
 | Option | Effect |
 | --- | --- |
-| `--analytics` | Also install the analytics rule. For products that track user behaviour with PostHog |
+| `--analytics` | Also install the analytics rule, for products that track usage with PostHog |
 | `--personal` | Install skills to `~/.claude/skills` instead of the project |
 | `--force` | Overwrite existing files. Default is to skip them |
-| `--dry-run` | Print what would change, write nothing |
+| `--dry-run` | Show what would change, write nothing |
 
-There is one stack — Expo, React Native, TypeScript, Tailwind CSS through Uniwind, React Native Reusables, TanStack Query — so no `--stack` flag. Add `--dry-run` to any command to preview it first. Re-running is safe: existing files are skipped and listed, never clobbered.
+There is one stack — Expo, React Native, TypeScript, Tailwind CSS through Uniwind, React Native Reusables, TanStack Query — so there is no `--stack` option. Re-running is safe: existing files are skipped and listed.
 
 ### What it writes
 
 ```
 .claude/
-  skills/                          7 skills
-  rules/
-    documentation-conventions.md   which docs arrive from the backend, which this repo owns, readiness
-    tech-stack.md                  the tools, and the environments on EAS
-    coding-standards.md            architecture, data layer, session, mock mode, native behaviour, how code is written
-    security.md                    security policy for an installed app, and the contract the backend must meet
-    testing.md                     test layers, what each proves, environments, the device matrix
-    ci-cd.md                       pipelines, EAS, store builds vs updates, tags, rollback — loads only when deploy files are touched
-    analytics.md                   --analytics only
-CLAUDE.md                          documentation map · audiences · project configuration
+  skills/        7 skills
+  rules/         6 rules (plus analytics.md with --analytics)
+CLAUDE.md        documentation map · audiences · project configuration
 docs/
-  product-docs/  business-rules/  app-flows/  api-docs/  api-testing/     arrive from the backend
-  screen-specs/  design/screens/  integration-handoff/  infra/  release/   written here
+  product-docs/  business-rules/  app-flows/  api-docs/  api-testing/            arrive from the backend
+  screen-specs/  design/screens/  integration-handoff/  infra/  release/         written here
 ```
 
-`docs/feature-areas.md` is deliberately **not** created: it arrives from the backend with `pnpm docs:pull`, which `/mobile-setup` installs. `docs/screen-specs/` is created empty; `/screen-specs` fills it from the built screens.
+`docs/feature-areas.md` isn't created — it arrives from the backend.
 
 ### After installing
 
-1. Fill in the **audiences** and **project configuration** blocks in `CLAUDE.md`. The backend repo path and the bundle id matter most. Anything you leave blank, the skill that needs it asks for once.
+1. Fill in the **audiences** and **project configuration** in `CLAUDE.md` — above all, the path to the backend repo and the app's bundle id. Anything you leave blank, the skill that needs it asks for once.
 2. Run `/mobile-setup`. It builds the foundation and pulls the backend's docs.
 3. Run `/design-system` once the PRD and feature areas are in.
 4. Run `/mobile-build` for the first feature area.
 
-### Skills are project-scoped by default
-
-They install to `.claude/skills/` and are meant to be committed: cloud sessions, scheduled runs and Cowork read only project skills, and rules that travel without the skills that execute them are conventions with no tooling. `--personal` exists for throwaway work.
+Commit `.claude/` with your project: cloud sessions and scheduled runs only read project skills. `--personal` is for throwaway work.
 
 ### Updating
-
-In a project that already has it, the installer skips existing files by design, so an update needs `--force`:
 
 ```bash
 npx github:dev-emekaa/mobile-app-blueprint init --force
 ```
 
-`--force` overwrites, including local edits to a skill or a rule. Run it on a clean working tree and read the diff before committing. `CLAUDE.md` is never rewritten.
-
-Pin a tag for a fixed version: `npx github:dev-emekaa/mobile-app-blueprint#v1.0.0 init`. If an update doesn't seem to have landed, `npm cache clean --force`.
+- Skills and rules are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
+- `CLAUDE.md` is never overwritten: it holds your project's values.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.1.4 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
-## The pipeline
+## How the app gets built
 
-Each step is gated on the one before it. A skill whose inputs don't exist yet stops and says so.
+Each step needs the one before it; a skill whose inputs don't exist yet stops and says so.
 
 ```
-Backend Blueprint writes: feature-areas · business-rules · app-flows · (later) api-docs
+From the backend: feature areas · business rules · app flows · (later) API docs
  │
- ├─ /mobile-setup     → the foundation, once; pulls the backend's docs
- ├─ /design-system    → DESIGN.md, once
- └─ /mobile-build     → per feature area, in order:
-      Phase 0: navigation model, tab bar and shell, once
-      Design:  screen inventory → references → canvas designs → your approval   [Designed]
-      Build:   screens on mock data through the real data layer, both platforms  [Built]
-               → /screen-specs → pushed to the backend                           [Specced]
-           ↓   once every phase-1 area is Specced, the backend designs its schema,
-               then builds the areas in order, writing api-docs per area
-      /mobile-integrate → per area as its api-docs land: real endpoints,
-                          orphan audit, backend-issues handoff                    [Integrated]
-      /mobile-release   → an update over the air, or a store build through
-                          TestFlight, the Play tracks, review and a gradual rollout
+ ├─ /mobile-setup      the foundation, once; pulls the backend's docs
+ ├─ /design-system     DESIGN.md, once
+ └─ /mobile-build      per feature area, in order:
+      first, once: the navigation and the app's shell
+      design   every screen it needs, designed for your approval        → Designed
+      build    screens on mock data, on iOS and Android, with tests     → Built
+               → /screen-specs, sent to the backend                     → Specced
+      ↓ once every area is Specced, the backend designs its database, then
+        builds the areas in order, writing each one's API docs
+    /mobile-integrate  real endpoints in place of the mocks             → Integrated
+    /mobile-release    an over-the-air update, or a store build through review
+                       and a gradual rollout
 
-/mobile-issue-fix — any time, for anything that already exists
+/mobile-issue-fix — any time, for anything already built
 ```
 
-**Later phases** follow the backend's: `/feature-requirements` and `/phase-review` there produce the FRD, the feature files and the frontend actions; here the unit becomes a **feature**, tracked in `docs/phase-{n}/ui-implementation-order.md`, and `/mobile-build` reads the existing screens before designing new ones.
+**Later phases** follow the backend's: the unit becomes a feature, and `/mobile-build` reads the existing screens before designing new ones.
 
 ---
 
 ## The skills
 
 ### `/mobile-setup`
-**The foundation, once.** Expo scaffold with development builds and Continuous Native Generation; `app.config.ts` and `eas.json` with a development, staging and production identity each; the HTTP wrapper with the bearer header and single-flight refresh, the session module (access token in memory, refresh token in SecureStore), TanStack Query wired to the network and app state, MMKV, generated API types; the in-process mock mode that lets screens run on realistic data before the backend exists, with passthrough to the real backend for everything already integrated; design tokens from `DESIGN.md`; push, deep links, sign-in providers and payments wired; Jest, MSW and Maestro; Sentry; the three CI/CD workflows on GitHub Actions and EAS; the docs sync with the backend repo; an infra guide for the EAS, Apple, Google and GitHub steps only you can do.
-**Reads** the rules, `CLAUDE.md` · **Writes** the foundation, `docs/infra/infra-setup.md`
+The foundation, once: the Expo project with development builds and a separate identity for development, staging and production; sign-in and the data layer; the mock API that lets screens run before the backend exists; push notifications, deep links and payments wired in; tests, error tracking, the CI/CD pipelines on GitHub Actions and EAS; the docs sync with the backend repo; and a guide to the Expo, Apple, Google and GitHub steps only you can do.
+**Writes** the foundation, `docs/infra/infra-setup.md`
 
 ### `/design-system`
-**The source of truth for how everything looks, moves, feels and reads.** Reads the product docs to understand what kind of app this is and who holds it; researches competitors and category leaders on Mobbin, on both platforms, and reverse-engineers what makes them work; proposes a direction with a style tile for your approval; then writes `DESIGN.md` in the DESIGN.md format, linted with Google's checker — tokens that map onto React Native Reusables' variables, every component with every state on each platform, the navigation model, patterns for list, detail, form, onboarding, permissions and offline, motion and haptics, imagery, content and voice, screen sizes, accessibility — and applies the tokens to the code. Takes the brand from a sibling client's `DESIGN.md` where one exists. Built to avoid the generic.
-**Reads** PRD, brief, feature areas, rules, flows, brand assets · **Writes** `DESIGN.md`
+How everything looks, moves, feels and reads on both platforms: researches the product's category, proposes a direction for your approval, then writes `DESIGN.md` — colours, type, every component and its states on iOS and Android, navigation, layouts, motion and haptics, writing style and accessibility — and applies it to the code.
+**Writes** `DESIGN.md`
 
 ### `/mobile-build`
-**Design and build one unit's screens.** Derives every screen every flow needs, with its states — including offline, permission requests and their denials — and gets the inventory approved; pulls references per screen type; designs the batch on the `/design` canvas (or as HTML prototypes where the canvas is unavailable) and iterates with you until approved; then builds the screens for iOS and Android with realistic mock data through the real hooks, wires the native capabilities each screen uses, sources images (stock, looked at before use; generated; or a prompt in `images.md`), writes the tests and the Maestro flow, walks every flow on both platforms against the approved designs, and runs `/screen-specs` so the backend can build. Two stages with a checkpoint at approval, or a whole phase's build stage in one session with subagents.
-**Reads** flows, rules, DESIGN.md, existing screens · **Writes** designs, screens, mocks, tests, screen specs
+Designs and builds one feature area's screens: lists every screen its flows need — including offline and permission states — designs them for your approval, then builds them for iOS and Android on realistic mock data with images and tests, checks every flow on both platforms against the designs, and writes the screen specs the backend builds from.
+**Writes** the designs, screens, mocks, tests and screen specs
 
 ### `/mobile-integrate`
-**Replace mocks with the real backend.** Audits every screen against the specs and the api-docs first (build gaps, design gaps, missing endpoints, the native endpoints — push, minimum version, deletion, entitlements); aligns the hooks to the api-docs and removes the handlers; wires every documented error and background behaviour; audits for orphan endpoints; logs anything the backend must fix in a handoff file the backend reads; updates the tests to the real shapes; walks every flow against staging on both platforms and names the backend commit verified. One unit per session, or a whole phase in order.
-**Reads** api-docs, specs, api-testing, flows, rules · **Writes** the integration, the handoff file
+Replaces the mocks with the real backend once its API docs land: checks the screens against the specs, connects every endpoint, handles every documented error, logs anything the backend must fix, and walks every flow on staging on both platforms.
+**Writes** the integration, the backend-issues file
 
 ### `/mobile-issue-fix`
-**Change what exists.** Reproduces the issue on the platform it was reported on and then the other, classifies it (client bug, platform defect, backend bug to log, doc error to report, change request, backend handoff to adopt), writes the failing test, fixes surgically, updates every doc the fix touched, verifies the flows it affected on both platforms, says whether the fix ships over the air or needs a store build, and delivers a PR. Adopts a backend handoff breaking-items-first.
-**Reads** the issue, the code, the docs · **Writes** the fix, tests, doc updates
+Changes what already exists: reproduces the issue on both platforms, writes a failing test, fixes it, updates the docs it touched, says whether the fix can go out as an update or needs a store build, and adopts changes the backend hands over.
+**Writes** the fix, its tests, the docs it changes
 
 ### `/mobile-release`
-**From "what should ship" to "live for users".** Decides from the fingerprint whether the release is an over-the-air update or a store build; prepares the version, release notes, listings, Maestro-generated screenshots and compliance answers that match the code; runs the production pipeline; checks the build on real devices against the production backend; submits to both stores with phased release and staged rollout; handles approvals and rejections; raises the rollout while the crash-free rate holds, halts when it does not; records every release. Covers the first release, with the listings and compliance answers written from scratch.
-**Reads** the tracker, the code, `docs/release/`, Sentry, the store consoles · **Writes** `docs/release/`
+Takes a release from "what should ship" to "live for users": decides whether it's an over-the-air update or a store build, prepares the version, release notes, store listings, screenshots and privacy answers, checks the build on real devices, submits it for review, and raises the rollout while the crash rate stays low. Covers the first release too.
+**Writes** `docs/release/`
 
 ### `/screen-specs`
-**What each screen sends to the backend and shows from it.** The same skill the Backend Blueprint ships, unchanged, run here in its From designs mode on the built screens so the backend has the specs it builds against.
-**Reads** the built screens, flows, rules · **Writes** `docs/screen-specs/`
+What each screen sends to the backend and shows from it — the same skill the Backend Blueprint ships, run here on the built screens.
+**Writes** `docs/screen-specs/`
 
 ---
 
 ## The rules
 
-These install into `.claude/rules/`, loaded at the start of every session — except `ci-cd.md`, which loads only when a workflow, `eas.json`, `app.config.ts` or a Maestro file is touched.
+Loaded by Claude Code at the start of every session — except `ci-cd.md`, which loads only when deploy files are touched.
 
-- **`documentation-conventions.md`** — which docs arrive from the backend and are read-only here, which this repo owns, how screen specs change hands, the UI tracker and its six readiness values (Draft, Ready, Designed, Built, Specced, Integrated).
-- **`tech-stack.md`** — the tools: Expo with development builds, Expo Router, Tailwind through Uniwind, React Native Reusables, FlashList, Reanimated and Gesture Handler, TanStack Query, Zustand on MMKV, SecureStore, React Hook Form and Zod, expo-notifications, expo-updates, RevenueCat, Jest and Maestro, Sentry, optional PostHog; Lottie, 3D and Skia only when a feature needs them. And the environments on EAS.
-- **`coding-standards.md`** — the architecture (Expo renders, TanStack caches, the backend decides), the folder structure and dependency direction, the HTTP client and error handling with offline as a state, mock mode, the data layer, the session and token lifecycle, routing and deep links, components, state, forms with the keyboard, effects, styling with the adaptive baseline for large screens, lists, animation and haptics, performance and startup, platform behaviour (permissions, push, minimum version, background), errors, code style, tests in this stack.
-- **`security.md`** — tokens and sessions, device storage, transport, deep links and inbound data, permissions, environment and secrets, third-party SDKs, payments, updates and supply chain, errors, personal data and store compliance, and the **backend contract**: tokens in the body for the platform header, the minimum-version endpoint, push registration, account deletion and the link files, status semantics, additive changes, server-side purchase verification.
-- **`testing.md`** — static, unit, integration (the bulk, with MSW), E2E with Maestro on real builds, smoke, manual QA on a device matrix that includes an iPad in compatibility mode and a tablet in landscape; environments and data; the regression rule.
-- **`ci-cd.md`** — PR checks with `expo export` and Maestro on demand, the automatic staging deploy that builds or updates by fingerprint and moves `staging-current`, the manual production deploy of the verified commit, smoke-tested on this commit's JavaScript before any user receives it, rolled out gradually, with `prod-*` and `v*` tags, the hotfix branch, releasing alongside the backend, what rollback means for an update and for a store build.
-- **`analytics.md`** *(with `--analytics`)* — the native SDK batched, explicit events named `object_action`, no personal data, identify and reset, consent, no cross-app tracking.
+| Rule | Covers |
+| --- | --- |
+| `documentation-conventions.md` | Which docs come from the backend, which this repo owns, and each screen's progress from Draft to Integrated |
+| `tech-stack.md` | The tools — Expo, Expo Router, Uniwind, React Native Reusables, TanStack Query, RevenueCat, Jest, Maestro, Sentry — and the environments on EAS |
+| `coding-standards.md` | How the app is structured and written: data, sign-in, mock mode, offline, navigation, native behaviour, performance |
+| `security.md` | Tokens and device storage, deep links, permissions, secrets, payments, personal data and store rules — and what the backend must provide |
+| `testing.md` | The test layers, environments and data, the devices to check on, and a test for every bug |
+| `ci-cd.md` | PR checks, staging and production releases, updates versus store builds, rollback, releasing alongside the backend |
+| `analytics.md` *(with `--analytics`)* | Event naming, no personal data, consent, no cross-app tracking |
 
 ---
 
-## Working with the Backend Blueprint
+## Working with the backend
 
-The two repos share the docs through `pnpm docs:pull` and `pnpm docs:push`, which `/mobile-setup` installs and which read the backend repo path from `CLAUDE.md`. Pull brings the backend's docs here, including its copy of the screen specs once it owns them; `push --specs` sends one screen-spec file there and `push --handoff` sends this client's two backend-issues files (`backend-issues-mobile.md` and its `-resolved` archive — each client writes only its own). The backend's `/backend-issue-fix` reads its open entries itself, appends each resolution, and writes a client handoff message that `/mobile-issue-fix` adopts.
-
-The backend must meet the contract in `security.md` → Backend contract: its `security.md` and services rule (v1.2.0 and later) state the token, push, deletion and link-file lines from its side, its build skill the minimum-version endpoint; its api-docs document the platform and version headers and the error shapes. Install the Backend Blueprint with `--store-client`, so its deprecations register exists, and have its `Client release status` set before the first store submission: that is the line after which it stops making breaking changes.
-
-Where the product also has a web client built with the Web App Blueprint, the two client repos are independent: each has its own `DESIGN.md` (the second takes the brand from the first), its own handoff file, and its own pipelines. The backend serves both.
+- **Sharing docs:** `pnpm docs:pull` brings the backend's docs here; `pnpm docs:push` sends screen specs and backend issues there. `/mobile-setup` installs both, reading the backend repo's path from `CLAUDE.md`.
+- **Issues:** `/mobile-integrate` logs what the backend must fix in `backend-issues-mobile.md`; the backend's `/backend-issue-fix` fixes it and hands back a message that `/mobile-issue-fix` adopts.
+- **The backend's side:** it must meet `security.md` → Backend contract — tokens, push registration, the minimum-version check, account deletion and the deep-link files. Backend Blueprint v1.2.0 or later does.
+- **Before the first store release:** install the Backend Blueprint with `--store-client` and set its `Client release status`. From then on it stops making changes that would break versions already on people's phones.
+- **Another client for the same product:** each client repo is separate. `/design-system` takes the brand from the first client's `DESIGN.md`, so the product looks like itself everywhere.
 
 ---
 
 ## The folder version
 
-The downloadable, manual alternative to the installer — the skills, rules and template laid out to copy into a project by hand, with its own README. Build it from this repo:
+A downloadable alternative to the installer, built from the same files:
 
 ```bash
 npm run package
 ```
 
-It writes `dist/mobile-app-blueprint/` and `dist/mobile-app-blueprint-v{version}.zip`, from the same assets the installer uses, so the two never drift apart. Its guide lives in `folder/README.md`.
+It writes `dist/mobile-app-blueprint/` and `dist/mobile-app-blueprint-v{version}.zip`. Its guide is `folder/README.md`.
 
 ### Releasing
 
-Every release is a version tag. Pushing one builds the zip and publishes it on the repo's **Releases** page:
-
 ```bash
-npm version minor        # bumps package.json, commits, and tags v1.2.0 (patch · minor · major)
+npm version patch        # bumps package.json, commits and tags (patch · minor · major)
 git push --follow-tags   # pushes the commit and the tag
 ```
 
-The zip appears under the release's **Assets** as `mobile-app-blueprint-v1.2.0.zip` — that is the file to share. The **Source code** archives GitHub adds to every release are the repo itself, not the folder version. A tag that doesn't match the `package.json` version fails the build, so the zip's name always matches its contents.
+The zip appears under the release's **Assets** as `mobile-app-blueprint-v{version}.zip` — that is the file to share, not the Source code archives. A tag that doesn't match `package.json` fails the build.
 
 ---
 
-**Requires** Node 22 or later, Claude Code, and for the builds an Expo account with EAS, an Apple Developer Program membership and a Google Play developer account (the setup skill's infra guide walks through them). The `/design` canvas needs a recent Claude Code signed in to a claude.ai account; `/mobile-build` falls back to HTML prototypes without it. **License** proprietary — all rights reserved.
+## Requires
+
+- Node 22 or later, and Claude Code
+- For builds and releases: an Expo account, an Apple Developer Program membership and a Google Play developer account — `/mobile-setup`'s guide walks through them
+- For design research: Mobbin, connected through its MCP — `/design-system` and `/mobile-build` use it for references
+- For the `/design` canvas: a recent Claude Code signed in to a claude.ai account — without it, `/mobile-build` designs as HTML prototypes instead
+
+**License** proprietary — all rights reserved.

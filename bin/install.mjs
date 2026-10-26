@@ -144,7 +144,7 @@ ${c.b('Next')}
   4. Run ${c.b('/mobile-build')} for the first feature area.
 
   ${n} skills installed to ${c.dim(opts.personal ? '~/.claude/skills' : '.claude/skills')}${
-    opts.personal ? c.y('\n  Note: personal skills are not read by cloud sessions, routines or Cowork.') : ''}
+    opts.personal ? c.y('\n  Note: personal skills are not read by cloud sessions or scheduled runs.') : ''}
 `);
 }
 
