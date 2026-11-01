@@ -2,7 +2,7 @@
 
 **Design, build and release a product's iOS and Android app with Claude Code, connected to the real backend.**
 
-Every screen follows one design system. Each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints as they're ready. Releases go out as over-the-air updates or through the App Store and Google Play. Seven Claude Code skills and the rules behind them, for Expo.
+Every screen follows one design system. Each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints as they're ready. Releases go out as over-the-air updates or through the App Store and Google Play. Eight Claude Code skills and the rules behind them, for Expo.
 
 **Works with** the [Backend Blueprint](https://github.com/dev-emekaa/backend-blueprint), which it is a client of: it reads the backend's product docs and API docs, and sends back screen specs and issues.
 
@@ -33,7 +33,7 @@ There is one stack — Expo, React Native, TypeScript, Tailwind CSS through Uniw
 
 ```
 .claude/
-  skills/        7 skills
+  skills/        8 skills
   rules/         6 rules (plus analytics.md with --analytics)
 CLAUDE.md        documentation map · audiences · project configuration
 docs/
@@ -50,6 +50,8 @@ docs/
 3. Run `/design-system` once the PRD and feature areas are in.
 4. Run `/mobile-build` for the first feature area.
 
+**Already have a mobile app?** Run `/mobile-adopt` instead of steps 3 and 4, once the backend has been adopted. It documents the existing code the way these skills expect and lists where it departs from the rules; `/mobile-setup` then fills whatever foundation the report says is missing.
+
 Commit `.claude/` with your project: cloud sessions and scheduled runs only read project skills. `--personal` is for throwaway work.
 
 ### Updating
@@ -60,7 +62,7 @@ npx github:dev-emekaa/mobile-app-blueprint init --force
 
 - Skills and rules are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
 - `CLAUDE.md` is never overwritten: it holds your project's values.
-- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.1.5 init`. If an update doesn't seem to land: `npm cache clean --force`.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.2.0 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
@@ -85,6 +87,7 @@ From the backend: feature areas · business rules · app flows · (later) API do
                        and a gradual rollout
 
 /mobile-issue-fix — any time, for anything already built
+/mobile-adopt — once, to bring an existing app under the blueprint, after the backend
 ```
 
 **Later phases** follow the backend's: the unit becomes a feature, and `/mobile-build` reads the existing screens before designing new ones.
@@ -120,6 +123,10 @@ Takes a release from "what should ship" to "live for users": decides whether it'
 ### `/screen-specs`
 What each screen sends to the backend and shows from it — the same skill the Backend Blueprint ships, run here on the built screens.
 **Writes** `docs/screen-specs/`
+
+### `/mobile-adopt`
+Brings an existing mobile app under the blueprint, once, after the backend: inventories the code, says whether its stack fits, reconstructs the tracker, `DESIGN.md` and the screen specs from the code with every fact citing its source, checks the backend contract, and lists where the code departs from the rules as issues or a proposed phase. Changes no application code.
+**Writes** the docs, `docs/adoption-report.md`
 
 ---
 

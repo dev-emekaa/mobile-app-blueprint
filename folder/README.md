@@ -1,6 +1,6 @@
 # Mobile App Blueprint
 
-Design, build and release a product's iOS and Android app with Claude Code, connected to the real backend. Every screen follows one design system; each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints. Releases go out as over-the-air updates or through the App Store and Google Play. Seven skills and the rules behind them, for Expo · React Native · TypeScript · Tailwind CSS (Uniwind) · React Native Reusables · TanStack Query, built and shipped through EAS.
+Design, build and release a product's iOS and Android app with Claude Code, connected to the real backend. Every screen follows one design system; each part of the app is designed for your approval, built and tested on both platforms with realistic mock data, then connected to the backend's real endpoints. Releases go out as over-the-air updates or through the App Store and Google Play. Eight skills and the rules behind them, for Expo · React Native · TypeScript · Tailwind CSS (Uniwind) · React Native Reusables · TanStack Query, built and shipped through EAS.
 
 It works with the **Backend Blueprint**: it reads the backend's product docs and API docs, and sends back screen specs and issues.
 
@@ -10,7 +10,7 @@ It works with the **Backend Blueprint**: it reads the backend's product docs and
 
 ```
 mobile-app-blueprint/
-  skills/                7 skills, one folder each
+  skills/                8 skills, one folder each
   rules/                 the rules every project uses, plus one optional
   templates/
     CLAUDE.md            the blocks to add to your project's CLAUDE.md
@@ -33,7 +33,7 @@ Then:
 
 1. **Remove the optional rule if you don't need it:** `analytics.md` — keep it only if the product tracks user behaviour with PostHog.
 2. **Add the CLAUDE.md blocks.** Paste `templates/CLAUDE.md` into your project's `CLAUDE.md` (create the file if there is none). Fill in the audiences and the project configuration now — the backend repo path and the bundle id above all — or leave them; each skill asks for anything missing, once.
-3. **Check it worked.** Start Claude Code and run `/context` — the rules appear under Memory files (`ci-cd.md` only once a deploy file is touched). Type `/` and the seven skills are listed.
+3. **Check it worked.** Start Claude Code and run `/context` — the rules appear under Memory files (`ci-cd.md` only once a deploy file is touched). Type `/` and the eight skills are listed.
 
 > `.claude` is a hidden folder. To see it in Finder, press **Cmd + Shift + .**
 
@@ -59,6 +59,10 @@ Then:
 3. `/mobile-integrate` — one feature per session, or the whole phase.
 4. `/mobile-release` — an update over the air, or a store build when native code changed.
 
+**Taking over an existing mobile app**
+
+`/mobile-adopt` — once, after the backend has been adopted: documents the code the way these skills expect, with every fact citing its source, checks the backend contract, and lists where it departs from the rules; `/mobile-setup` then fills the foundation it says is missing. Then the project is run like any other.
+
 **Fixing an issue, or adopting a backend change**
 
 `/mobile-issue-fix` — reproduces on both platforms, classifies, writes the failing test, fixes surgically, updates the docs, verifies, says whether the fix ships over the air or needs a store build, and delivers a PR.
@@ -78,6 +82,8 @@ Then:
 **`/mobile-issue-fix`** — Resolves anything in what already exists: bugs, crashes, platform defects, design drift, accessibility or performance problems, compliance corrections, change requests, and the changes a backend handoff requires. Failing test first, surgical fix, docs updated, flows verified on both platforms, and a clear answer on whether the fix is an update or a store build.
 
 **`/mobile-release`** — Takes a release from "what should ship" to "live for users": update or store build by fingerprint, version and release notes, listings and Maestro-generated screenshots, compliance answers checked against the code, the production pipeline, a device check against the production backend, submission to both stores, review outcomes, a gradual rollout watched against the crash-free rate, and a record of every release. Covers the first release too.
+
+**`/mobile-adopt`** — Brings an existing mobile app under the blueprint, once, after the backend: inventories the code, says whether its stack fits, reconstructs the tracker, `DESIGN.md` and the screen specs with citations, and lists deviations as issues or a proposed phase. Changes no application code.
 
 **`/screen-specs`** — What each screen sends to the backend and shows from it, written from the built screens. The same skill the Backend Blueprint ships.
 

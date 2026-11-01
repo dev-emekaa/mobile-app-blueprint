@@ -103,7 +103,7 @@ ${c.b('Options')}
   --dry-run         Print what would change, write nothing
 
 ${c.b('What it writes')}
-  .claude/skills/          7 skills
+  .claude/skills/          8 skills
   .claude/rules/           conventions · tech stack · coding standards · security · testing · ci-cd
   docs/                    product-docs · business-rules · app-flows · screen-specs · api-docs · api-testing
                            design · integration-handoff · infra · release
@@ -142,6 +142,8 @@ ${c.b('Next')}
      docs sync, then pulls the backend's docs into ${c.dim('docs/')}.
   3. Run ${c.b('/design-system')} once the product docs are in — it writes ${c.dim('DESIGN.md')}.
   4. Run ${c.b('/mobile-build')} for the first feature area.
+
+  Already have the app? Run ${c.b('/mobile-adopt')} instead of steps 3 and 4, once the backend is adopted.
 
   ${n} skills installed to ${c.dim(opts.personal ? '~/.claude/skills' : '.claude/skills')}${
     opts.personal ? c.y('\n  Note: personal skills are not read by cloud sessions or scheduled runs.') : ''}
