@@ -21,6 +21,7 @@ Read these first; ask for anything missing.
 | `CLAUDE.md` | The audience this repo serves, whether a second audience shares the brand, tablet support, and which native capabilities (push, payments, biometrics) the system must give a pattern to |
 | Brand assets, if any | The logo system, where one exists (the Ideas Blueprint produces one), brand colors, a name, a tagline. The logo's color and geometry are inputs to the palette and shape language, not the other way round |
 | My screenshots in `docs/design/references/`, if any | Screens I picked from products I admire — the most direct statement of what I want. Optional; never committed |
+| The designer's Figma file, linked in the `Designs` row of `CLAUDE.md` where the screens are supplied | The system as designed: variables, text styles, components and their variants — read through the Figma MCP when connected, otherwise from the token values the designer supplies (a variables or styles export, or a written list). Values are read off the exports only when neither exists and I say so, each marked `measured from export — confirm` and listed for the designer. It decides the direction (Steps 2 and 3) |
 | Another client's `DESIGN.md` for the same product, if one exists (at the sibling client repo path in `CLAUDE.md`) | The brand decisions — palette, type, voice, shape — are taken from it so the product looks like itself on every client; the mobile components, patterns and motion are this system's own |
 | An existing `DESIGN.md` | In a later phase: extend it, never regenerate it |
 
@@ -41,6 +42,8 @@ Before any color is picked, write down, in a few lines each:
 
 ## Step 2 — Research the references
 
+Skipped where a designer's file supplies the screens: the file is the reference, and Step 3 records what it decides.
+
 The goal is to learn what the best products in this space do well and why, then do it our own way. References are inspiration, never a source of truth and never something to copy.
 
 **Choose them:** **three to five direct competitors or neighbours** named in the brief, and **two or three category leaders** whose interface is widely admired, in the product's category or a close one (a dense tool learns from the best dense tools, whatever their domain). For each, look at the actual screens — the images, not the metadata — of the surfaces this product will have: onboarding, the main list, the main detail, a form, the tab bar and navigation, a sheet, an empty state, a permission request, settings. Look at both platforms where the app has both.
@@ -58,7 +61,7 @@ The goal is to learn what the best products in this space do well and why, then 
 
 ## Step 3 — Propose the direction → **wait for my approval**
 
-Present one direction, with the reasoning from Steps 1 and 2, and one alternative where the choice is genuinely open. Include:
+Present one direction, with the reasoning from Steps 1 and 2, and one alternative where the choice is genuinely open. Where a designer's file supplies the screens, the direction is theirs: present it as read from the file — the principles it implies, its palette, type, shape and motion as they are — and propose only what the file leaves undecided. Where the file breaks a rule this skill holds — a text pair under AA, a font that is not free — that is a finding for the designer, raised before `DESIGN.md` is written; the system records the file, never a corrected version of it. Include:
 
 - **Principles** — four to six, each one sentence, each with a consequence a builder could act on ("Density over decoration: tables default to compact rows, and whitespace is spent on grouping, not on margins").
 - **Palette** — the brand color and why, the neutral scale and its temperature, the semantic colors, the accent policy (how much color a screen may carry), with hex values and the contrast ratios of text on surface, light and dark, checked against outdoor-sunlight use where the product has it.

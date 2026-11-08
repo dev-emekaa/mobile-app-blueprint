@@ -62,7 +62,7 @@ npx github:dev-emekaa/mobile-app-blueprint init --force
 
 - Skills and rules are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
 - `CLAUDE.md` is never overwritten: it holds your project's values.
-- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.2.0 init`. If an update doesn't seem to land: `npm cache clean --force`.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.3.0 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
@@ -105,7 +105,7 @@ How everything looks, moves, feels and reads on both platforms: researches the p
 **Writes** `DESIGN.md`
 
 ### `/mobile-build`
-Designs and builds one feature area's screens: lists every screen its flows need — including offline and permission states — designs them for your approval, then builds them for iOS and Android on realistic mock data with images and tests, checks every flow on both platforms against the designs, and writes the screen specs the backend builds from.
+Designs and builds one feature area's screens: lists every screen its flows need — including offline and permission states — designs them for your approval, or reviews the ones a designer supplies, then builds them for iOS and Android on realistic mock data with images and tests, checks every flow on both platforms against the designs, and writes the screen specs the backend builds from.
 **Writes** the designs, screens, mocks, tests and screen specs
 
 ### `/mobile-integrate`
@@ -181,6 +181,7 @@ The zip appears under the release's **Assets** as `mobile-app-blueprint-v{versio
 
 - Node 22 or later, and Claude Code
 - For builds and releases: an Expo account, an Apple Developer Program membership and a Google Play developer account — `/mobile-setup`'s guide walks through them
+- Optional, when a designer makes the screens: Figma, connected through its MCP. Without it, `/mobile-build` and `/design-system` read the designer's exports
 - Optional, for design research: Mobbin, connected through its MCP. Without it, `/design-system` and `/mobile-build` research on the web, plus any screenshots you put in `docs/design/references/`
 - For the `/design` canvas: a recent Claude Code signed in to a claude.ai account — without it, `/mobile-build` designs as HTML prototypes instead
 

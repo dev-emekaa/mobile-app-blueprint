@@ -37,7 +37,7 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 | Design system | `DESIGN.md`, at the project root | `/design-system` |
 | Style tile | `docs/design/style-tile.html` | `/design-system`, only when the canvas is unavailable |
 | Navigation map | `docs/design/navigation.md` | `/mobile-build`, in Phase 0: the navigation model and the route map |
-| Approved designs | `docs/design/screens/{unit}/` | `/mobile-build`: exports of the approved screens, one folder per unit — the record of what was approved |
+| Approved designs | `docs/design/screens/{unit}/` | `/mobile-build`: exports of the approved screens, one folder per unit — the record of what was approved, once the row reads `Designed` |
 | Design references | `docs/design/references/` | You, optionally: screenshots of products you admire, read by `/design-system` and `/mobile-build`. Never committed |
 | Image prompts | `docs/design/images.md` | `/mobile-build`, only when an image has to be generated outside the session |
 | Screen specs | `docs/screen-specs/` (first phase) · `docs/phase-{n}/features/{feature}/screen-specs-{feature}.md` (later) | `/screen-specs`, from the built UI. See ownership below |
@@ -57,13 +57,13 @@ This repo has no `api-rbac` register. When `/screen-specs` runs here, an endpoin
 
 The same as the backend's: `{type}-{audience?}-{client?}-{feature-area}.md`, narrowing left to right, with a segment only where that split exists. The primary audience sits at the root of each folder; other audiences get `{audience}/` subfolders. Because this repo is one client, its own screen specs carry the client segment only when the backend's layout has one for this audience.
 
-Design exports are named per screen: `docs/design/screens/{unit}/{nn}-{screen-name}.png`, numbered in flow order, with `-{state}` suffixes for states that differ materially (`04-orders-empty.png`) and a `-android` suffix only where the Android screen differs from the iOS one in more than platform chrome.
+Design exports are named per screen: `docs/design/screens/{unit}/{nn}-{screen-name}.png`, numbered in flow order, with `-{state}` suffixes for states that differ materially (`04-orders-empty.png`) and a `-android` suffix only where the Android screen differs from the iOS one in more than platform chrome. Where a designer supplies the exports, they sit in the unit's folder from the moment they arrive, under the designer's names until the build skill renames them at approval; the Phase 0 shell's go in `docs/design/screens/phase-0/`.
 
 ## Phases
 
 The first phase is organised by feature area, in the order `docs/feature-areas.md` gives, and tracked in `docs/ui-implementation-order.md`. Every later phase is organised by feature, tracked in `docs/phase-{n}/ui-implementation-order.md`, in the order of the backend's `docs/phase-{n}/implementation-order.md` unless this repo records a reason to differ.
 
-The tracker has one row per unit, with its status, the date each status was reached, and a notes column, which also holds the link to the unit's `/design` canvas once it is designed there. It never holds content: content lives in the docs. The canvas can still be edited after approval; the exports, not the canvas, are what was approved, and a canvas edit counts only once it is approved and exported again.
+The tracker has one row per unit, with its status, the date each status was reached, and a notes column, which also holds the link to the unit's `/design` canvas, or to the designer's Figma file, once it is designed. It never holds content: content lives in the docs. The canvas or file can still be edited after approval; the exports, not the canvas or file, are what was approved, and an edit counts only once it is approved and exported again.
 
 ## Readiness
 
@@ -73,7 +73,7 @@ Six values, in order. A unit moves forward only through them, and the tracker sa
 | --- | --- |
 | `Draft` | Its business rules or app flows do not exist yet, or the backend's review has issues open against them. Never design from it. |
 | `Ready` | Its business rules and app flows exist. In a later phase, the review has settled the feature's rules and flows: its review docs hold no open founder decision against them. The backend's `implementation-order.md` still reads `Draft` until the screens are reviewed, and that is expected, because this repo writes the screens. Safe to design. |
-| `Designed` | Every screen every flow needs has been designed, reviewed and approved, and the exports are in `docs/design/screens/{unit}/`. |
+| `Designed` | Every screen every flow needs has been designed — here, or by a designer — reviewed and approved, and the exports are in `docs/design/screens/{unit}/`. |
 | `Built` | Every approved screen is built with mock data through the real data layer, on both platforms, with tests passing. |
 | `Specced` | Screen specs written from the built UI and handed to the backend. |
 | `Integrated` | Every mock replaced by the real endpoint, tests passing, verified against staging on both platforms. |

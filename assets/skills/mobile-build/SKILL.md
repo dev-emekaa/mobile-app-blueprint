@@ -18,6 +18,7 @@ Read these from the project's `CLAUDE.md`. If a value isn't recorded there, ask 
 | **Test commands** · **E2E command** | Unit and integration; Maestro. |
 | **Tablet support** · **Sign-in providers** · **Payments** · **Push notifications** | Which native capabilities and layouts the product has. Decides which patterns a unit's screens may use. |
 | **Design canvas** | `/design` where available. |
+| **Designs** | Designed here (default), or supplied by a designer: their Figma file, linked in the row, through its MCP when connected; otherwise their exports in `docs/design/screens/{unit}/`. |
 | **Design references** | Where references come from: Mobbin when connected, otherwise web research, and my screenshots in `docs/design/references/` if any. |
 | **Image generation** | Gemini through its MCP, or none. |
 | **Stock photo providers** | Unsplash, Pexels — which are configured. Their keys live in `.env`, never in `CLAUDE.md`. |
@@ -27,7 +28,7 @@ Read these from the project's `CLAUDE.md`. If a value isn't recorded there, ask 
 
 The unit of work is a **feature area** in the first phase and a **feature** in every later phase, in the order the UI tracker gives. Each unit goes through two stages:
 
-- **Design** — every screen the unit's flows need, designed on the canvas, iterated with me, and approved. Ends with the unit marked `Designed`.
+- **Design** — every screen the unit's flows need, designed on the canvas — or, where a designer supplies them, mapped to the inventory and reviewed — iterated with me, and approved. Ends with the unit marked `Designed`.
 - **Build** — the approved screens built for both platforms with realistic mock data through the real data layer, tested and verified against the designs (`Built`), then specced for the backend (`Specced`).
 
 The two stages can run in one session or in two; the tracker says where a unit is. By default a session takes one unit through whichever stage comes next. A **whole-phase build** takes every `Designed` unit through the build stage in one session (Section 6); design is never batched across units, because every batch needs my eyes.
@@ -122,7 +123,7 @@ Screens are built one unit at a time; the navigation they sit in is not. Before 
 - **The shell:** the tab bar and headers per `DESIGN.md`, where search, notifications and the account entry live, and how the shell behaves on a tablet running the phone layout.
 - **Global patterns the units will share:** the list screen anatomy, the detail screen anatomy, the create/edit pattern (screen, modal or sheet), the confirmation pattern, where errors and toasts appear, pull to refresh, the permission-request pattern, the offline state.
 
-Design the shell and one example of each global pattern on the canvas, and **wait for my approval**; write the canvas link in the tracker's Phase 0 notes. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker (created at the session's opening, Section 8) records it as done in its notes, and it is delivered as a PR per Step 12.
+Design the shell and one example of each global pattern on the canvas, and **wait for my approval**; write the canvas link in the tracker's Phase 0 notes. Where the `Designs` row says the screens are supplied, the shell and the global patterns are the designer's too: read them from the file or from the exports in `docs/design/screens/phase-0/`, review them as Step 4's supplied-designs block says, and write the file's link in the Phase 0 notes. The navigation model and the route map are still derived here from the flows, and the designer's shell is checked against them. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker (created at the session's opening, Section 8) records it as done in its notes, and it is delivered as a PR per Step 12.
 
 ---
 
@@ -150,11 +151,14 @@ Derive, from the app flow and business rules, every screen the unit needs, and p
 - **Modals, sheets and secondary surfaces** are listed under their parent.
 - Walk every flow step by step and tick the screen each step lands on. **A step with no screen is a gap**; a screen no step reaches is a question. List both.
 - In a later phase: mark each row **new**, **changed** (naming the existing screen and what changes) or **unchanged**.
-- Note the **reference plan**: which screen types need references (only those `DESIGN.md`'s patterns don't already settle; one search per screen type, not per screen), on both platforms.
+- **Supplied designs:** map each supplied screen to a row by what it shows — route, title, fields, actions, the entity — using frame, page or file names where they help, never relying on them. List the screens that match no row and the rows no screen covers; both are questions. In a later phase, compare each screen that maps to an existing row with its current export: identical is **unchanged**, different is **changed**, with what changed named — fields, actions, states, layout. I confirm the mapping with the inventory.
+- Note the **reference plan** (not for supplied designs): which screen types need references (only those `DESIGN.md`'s patterns don't already settle; one search per screen type, not per screen), on both platforms.
 
 Do not proceed until I approve the inventory and answer the questions.
 
 #### Step 3 — Reference research
+
+Supplied designs need no references: go to Step 4.
 
 For each screen type in the reference plan, from the sources the `Design references` row allows (renamed from `Design reference library` where an older project still has that name) and in `/design-system`'s order — my screenshots in `docs/design/references/` first, then Mobbin (`platform: ios` and `platform: android`; follow the Mobbin search skill where installed), or web research where Mobbin isn't connected or leaves a gap — one search per screen type, within the product's category where the category matters and across admired products where the pattern is universal. Look at the actual screens. For each screen type, record in two or three lines what the strong references do: layout, hierarchy, how they handle the states and the density, what their actions look like. Keep it to what this unit needs; the design system already settled the global decisions. Before reading my screenshots, confirm `.gitignore` lists `docs/design/references/`, and add it if not. Cite each reference by its link, or a screenshot by its file name. Where the plan needs no references, or no source is available, skip this step and say so; the design system already carries the direction.
 
@@ -165,17 +169,19 @@ References are never a source: coverage comes from the flows, constraints from t
 Design in **batches of one flow** (or one screen type across flows where that reads better), in flow order, each batch presented for review before the next.
 
 - **Invoke the `/design` skill** with a brief per batch: the product in one line, the design system's direction (pointing at `DESIGN.md`, which it reads), the screens with their purpose, content, actions and states from the inventory, the route and presentation each has, the shell it sits in, the platform (a phone frame, iOS by default, with an Android artboard only where the inventory marks a variant), and the references' lessons. Ask for every state the inventory lists, as separate artboards where the difference is material.
-- **A screen that already exists** (a `changed` row in a later phase) is edited on the canvas it was designed on, when that unit's tracker row records a link that opens, so the approved original is changed rather than redrawn; otherwise it is redesigned from its export and `DESIGN.md`.
+- **A screen that already exists** (a `changed` row in a later phase) is edited on the canvas it was designed on, when that unit's tracker row records a canvas link that opens, so the approved original is changed rather than redrawn; otherwise it is redesigned from its export and `DESIGN.md`.
 - **Where `/design` is not available** in this session (it needs a recent Claude Code with a claude.ai login), design each screen as a static HTML prototype in `docs/design/screens/{unit}/prototypes/`, built from the real design tokens, and open them for review the same way. The approval and export rules below are the same.
 - **Judge every artboard before showing it:** does it respect `DESIGN.md` token for token; does it carry every element the flow step needs and nothing the docs don't ask for; does it have its states; is the primary action within thumb reach; would it survive the smallest phone and 200% text; would a user know what to do next; does it look like this product or like a template. Fix before presenting.
 - **Present the batch** with one line per screen on what it does and any decision I should look at. I will edit on the canvas or ask for changes; apply them, re-check against the rules and the system, and present again. A change that contradicts the business rules or the design system is raised, not silently applied.
 - **Content is real.** Labels, empty-state copy, error messages and confirmations are written now, in the voice `DESIGN.md` defines, from the business rules' messages where they exist. They become the built screen's copy.
 
+**Supplied designs are reviewed, not designed.** Read every screen and state through the Figma MCP where connected — exact values, text, variants — otherwise from the exports. Judge each as above, plus the Phase 0 shell and navigation, every state the inventory lists, and the rules' constraints and copy. Present the findings per screen, for the designer; nothing is fixed here. A departure from the system is corrected by the designer or, where it is deliberate, raised as `/design-system` → Later describes; a conflict with the rules or flows is a finding too — the design changes, never the rules. Corrected screens are re-read and re-checked; what passes goes to me for approval in Step 5. Where the corrections arrive in a later session, re-run Steps 1 and 2 against the current file or exports and re-check every screen; earlier findings are not carried over.
+
 #### Step 5 — Approval and checkpoint
 
 When I approve the unit's designs:
 
-1. Export every screen and material state to `docs/design/screens/{unit}/`, named per `documentation-conventions`. The exports are the record of what I approved. Where the designs were made on the canvas, write its link in the unit's tracker notes: the canvas can still be edited, but an edit counts only once I approve it and its screens are exported again.
+1. Export every screen and material state to `docs/design/screens/{unit}/` — through the Figma MCP where the designs live there — named per `documentation-conventions`. Where the designs are the designer's exports, the folder already holds them: name each after its inventory row, remove what was superseded and any screen whose Step 2 question I answered as not this unit's, and confirm every screen and state is present. The exports are the record of what I approved. Where the designs were made on the canvas or supplied in Figma, write its link in the unit's tracker notes. The canvas or file can still be edited, but an edit counts only once I approve it and its screens are exported again.
 2. Record under the tracker row anything the designs decided that the specs must carry: fields shown on a screen that the flow implied but did not list, actions that moved between screens, states added.
 3. Mark the unit `Designed` with the date.
 4. Commit. If the session continues into the build stage, go to Step 6. Otherwise report — the screens designed with their states, the references used, the decisions recorded under the tracker row, and any question still open — and stop. The build stage starts in a fresh session from this checkpoint.
@@ -199,7 +205,7 @@ From the approved designs and the docs, list before writing code:
 
 #### Step 7 — Build the screens
 
-- Build in flow order, one screen at a time, each with every state from the inventory, matching the approved export. Run the development build in mock mode and look at each screen as you finish it, on the iOS simulator and the Android emulator, on the smallest supported phone, light and dark.
+- Build in flow order, one screen at a time, each with every state from the inventory, matching the approved export — with exact values through the Figma MCP where the designs live there and the frame still matches its export. Run the development build in mock mode and look at each screen as you finish it, on the iOS simulator and the Android emulator, on the smallest supported phone, light and dark.
 - Routes stay thin; screens live in the feature folder; data comes through hooks; forms through React Hook Form and the unit's schemas with the keyboard handled; copy from the designs; tokens from the system; haptics and motion from the system's tables. Exactly as `coding-standards` says.
 - Mock handlers simulate the backend as the flow describes it, including the error responses the rules define (a 422 with field errors, a 409 on an invalid transition), so error states can be walked.
 - Wire `analytics` events for the unit's intents where the rule is installed.
@@ -292,7 +298,7 @@ If any box cannot be ticked, say which and why rather than reporting the unit co
 Before Step 1, in a few lines:
 
 1. **State the phase, the unit and the stage** — design, build, or both; or whole-phase build. If I haven't said, take the next unit in the tracker through its next stage.
-2. **State the project values** from `CLAUDE.md` that change what you do: production status, tablet support, which native capabilities are on, whether the canvas and image generation are available, where design references come from, which stock photo providers are configured. Ask for any that are missing.
+2. **State the project values** from `CLAUDE.md` that change what you do: production status, tablet support, which native capabilities are on, whether this unit's designs are supplied or designed here, whether the canvas and image generation are available, where design references come from, which stock photo providers are configured. Ask for any that are missing.
 3. **Say whether Phase 0 is done.** If the information architecture and shell are not approved and built, we start there — after creating the UI tracker if it does not exist yet, as Step 1 describes.
 
 Then go to Step 1. Do not summarise the workflow back to me — start it.
