@@ -1,6 +1,6 @@
 ---
 name: mobile-build
-description: Design and build the mobile app's screens for one feature area (first phase) or one feature (later phases) — the screen inventory, references, canvas designs for your approval, then the screens built for iOS and Android with realistic mock data through the real data layer, native capabilities, images, tests, and the screen specs handed to the backend. Use when turning a unit's business rules and app flows into designed and built UI, before its backend exists.
+description: Design and build the mobile app's screens for one feature area (first phase) or one feature (later phases) — the screen inventory, references, canvas designs for your approval — or a designer's screens reviewed — then the screens built for iOS and Android with realistic mock data through the real data layer, native capabilities, images, tests, and the screen specs handed to the backend. Use when turning a unit's business rules and app flows into designed and built UI, before its backend exists.
 ---
 
 # Mobile Build

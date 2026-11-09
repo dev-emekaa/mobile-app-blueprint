@@ -62,7 +62,7 @@ npx github:dev-emekaa/mobile-app-blueprint init --force
 
 - Skills and rules are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
 - `CLAUDE.md` is never overwritten: it holds your project's values.
-- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.3.0 init`. If an update doesn't seem to land: `npm cache clean --force`.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.3.1 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
@@ -77,12 +77,13 @@ From the backend: feature areas · business rules · app flows · (later) API do
  ├─ /design-system     DESIGN.md, once
  └─ /mobile-build      per feature area, in order:
       first, once: the navigation and the app's shell
-      design   every screen it needs, designed for your approval        → Designed
-      build    screens on mock data, on iOS and Android, with tests     → Built
-               → /screen-specs, sent to the backend                     → Specced
+      design   every screen it needs, designed for your approval    → Designed
+               (or a designer's screens, reviewed)
+      build    screens on mock data, on iOS and Android, with tests → Built
+               → /screen-specs, sent to the backend                 → Specced
       ↓ once every area is Specced, the backend designs its database, then
         builds the areas in order, writing each one's API docs
-    /mobile-integrate  real endpoints in place of the mocks             → Integrated
+    /mobile-integrate  real endpoints in place of the mocks         → Integrated
     /mobile-release    an over-the-air update, or a store build through review
                        and a gradual rollout
 
@@ -101,7 +102,7 @@ The foundation, once: the Expo project with development builds and a separate id
 **Writes** the foundation, `docs/infra/infra-setup.md`
 
 ### `/design-system`
-How everything looks, moves, feels and reads on both platforms: researches the product's category, proposes a direction for your approval, then writes `DESIGN.md` — colours, type, every component and its states on iOS and Android, navigation, layouts, motion and haptics, writing style and accessibility — and applies it to the code.
+How everything looks, moves, feels and reads on both platforms: researches the product's category, proposes a direction for your approval — or, where a designer makes the screens, records their system — then writes `DESIGN.md` — colours, type, every component and its states on iOS and Android, navigation, layouts, motion and haptics, writing style and accessibility — and applies it to the code.
 **Writes** `DESIGN.md`
 
 ### `/mobile-build`
@@ -181,7 +182,7 @@ The zip appears under the release's **Assets** as `mobile-app-blueprint-v{versio
 
 - Node 22 or later, and Claude Code
 - For builds and releases: an Expo account, an Apple Developer Program membership and a Google Play developer account — `/mobile-setup`'s guide walks through them
-- Optional, when a designer makes the screens: Figma, connected through its MCP. Without it, `/mobile-build` and `/design-system` read the designer's exports
+- Optional, when a designer makes the screens — say so in the `Designs` row of `CLAUDE.md`: Figma, connected through its MCP. Without it, `/mobile-build` and `/design-system` read the designer's exports
 - Optional, for design research: Mobbin, connected through its MCP. Without it, `/design-system` and `/mobile-build` research on the web, plus any screenshots you put in `docs/design/references/`
 - For the `/design` canvas: a recent Claude Code signed in to a claude.ai account — without it, `/mobile-build` designs as HTML prototypes instead
 
