@@ -41,7 +41,7 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 | Design references | `docs/design/references/` | You, optionally: screenshots of products you admire, read by `/design-system` and `/mobile-build`. Never committed |
 | Image prompts | `docs/design/images.md` | `/mobile-build`, only when an image has to be generated outside the session |
 | Screen specs | `docs/screen-specs/` (first phase) · `docs/phase-{n}/features/{feature}/screen-specs-{feature}.md` (later) | `/screen-specs`, from the built UI. See ownership below |
-| Backend issues | `docs/integration-handoff/backend-issues-{client}.md` · its `-resolved` archive — one file per client, this repo's being `backend-issues-mobile.md` | `/mobile-integrate` and `/mobile-issue-fix`; the backend appends resolutions |
+| Backend issues | `docs/integration-handoff/backend-issues-{client}.md` · its `-resolved` archive — one file per client, this repo's being `backend-issues-mobile.md` | `/mobile-integrate` and `/mobile-issue-fix`; `/mobile-build` for a flow or rule a design shows to be wrong; the backend appends resolutions |
 | Analytics events | `docs/analytics-events.md` | `/mobile-setup`, `/mobile-build` and `/mobile-issue-fix`, where the `analytics` rule is installed |
 | Infra setup | `docs/infra/infra-setup.md` | `/mobile-setup`: EAS, the store accounts, credentials, secrets, the steps only a person can do |
 | Adoption report *(only in a project the blueprint didn't start)* | `docs/adoption-report.md` | `/mobile-adopt`: what it found, wrote and flagged. Docs it reconstructed carry a `Reverse-engineered … — verify` line until approved |

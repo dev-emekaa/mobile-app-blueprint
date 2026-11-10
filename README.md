@@ -62,7 +62,7 @@ npx github:dev-emekaa/mobile-app-blueprint init --force
 
 - Skills and rules are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
 - `CLAUDE.md` is never overwritten: it holds your project's values.
-- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.3.1 init`. If an update doesn't seem to land: `npm cache clean --force`.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.3.2 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
