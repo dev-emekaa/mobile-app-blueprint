@@ -20,7 +20,7 @@ Read these from the project's `CLAUDE.md`. If a value isn't recorded there, ask 
 | **Design canvas** | `/design` where available. |
 | **Designs** | Designed here (default), or supplied by a designer: their Figma file, linked in the row, through its MCP when connected; otherwise their exports in `docs/design/screens/{unit}/`. |
 | **Design references** | Where references come from: Mobbin when connected, otherwise web research, and my screenshots in `docs/design/references/` if any. |
-| **Image generation** | Gemini through its MCP, or none. |
+| **Image generation** | The provider the project's script uses (Gemini by default, or OpenAI), an image MCP I have configured, or none. Keys live in `.env`. |
 | **Stock photo providers** | Unsplash, Pexels — which are configured. Their keys live in `.env`, never in `CLAUDE.md`. |
 | **Production status** | Not in the stores yet / in the stores. Decides how carefully existing screens are changed, and whether a change forces a store build. |
 
@@ -218,8 +218,8 @@ From the approved designs and the docs, list before writing code:
 For each image the designs call for, choose the source that fits:
 
 - **Stock photography** where the image is a real-world subject: search Unsplash or Pexels through their APIs with the keys in `.env` (`CLAUDE.md` lists which providers are configured). If no key is configured, ask me for one and walk me through getting it (both offer free developer keys in minutes). Fetch the candidates, **look at them**, pick the one that matches the design's imagery rules, and record its attribution in `assets/images/ATTRIBUTION.md`.
-- **Generated imagery** where the image is illustrative, abstract, or has to match the system's illustration style: generate it through the Gemini MCP when connected, with a prompt that states subject, style from `DESIGN.md` → Imagery, palette, composition, aspect ratio and size. **Look at the result**; regenerate until it fits.
-- **Neither available**: write the prompt into `docs/design/images.md` — one entry per image with its screen, purpose, exact size and aspect ratio, style, palette, composition, what must and must not be in it, and the file name and path it should be saved to — and build the screen with a tokenised placeholder of the right size. Tell me in the report; when I add the files and say so, place them.
+- **Generated imagery** where the image is illustrative, abstract, or has to match the system's illustration style: generate it as the `Image generation` row says — `pnpm image:generate` with the project's script, or the MCP named there — with a prompt that states subject, style from `DESIGN.md` → Imagery, palette, composition, aspect ratio and size. **Look at the result**; regenerate until it fits. If the row names a provider but no key is set, ask me for one once; if generation still fails, treat the image as the next bullet does.
+- **Neither available, or generation failed**: write the prompt into `docs/design/images.md` — one entry per image with its screen, purpose, exact size and aspect ratio, style, palette, composition, what must and must not be in it, and the file name and path it should be saved to — and build the screen with a tokenised placeholder of the right size. Tell me in the report; when I add the files and say so, place them.
 
 After placing any image: optimise it (the right format and sizes for the densities the app ships, through `expo-image`; bundled in `assets/images/` only when it is part of the product's chrome, otherwise served from the backend's CDN), and look at the screen again.
 

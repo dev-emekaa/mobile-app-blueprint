@@ -24,6 +24,7 @@ The app is the client only. The backend (NestJS or FastAPI, built with the Backe
 | Secrets on the device | `expo-secure-store`: the refresh token, and nothing else |
 | Session | Access token in memory, refresh token in SecureStore; `apiFetch` refreshes. The backend issues and rotates both |
 | Forms · validation | React Hook Form · Zod, through `@hookform/resolvers` |
+| Image generation *(optional)* | `@google/genai` (Gemini, the default) or `openai`, a dev dependency used only by `scripts/image-generate.mjs`; its key in `.env` |
 | Environment variables | `@t3-oss/env-core` with Zod and `runtimeEnvStrict`, each `EXPO_PUBLIC_` variable referenced statically so Expo inlines it: validated at startup, set per environment in EAS |
 | Mocking | MSW (`msw/node`) in Jest · this app's in-process mock handlers for the build-before-integration phase (`coding-standards` → Mock mode) |
 | Dates | `date-fns` |
