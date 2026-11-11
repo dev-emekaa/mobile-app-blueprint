@@ -45,7 +45,7 @@
 | Project name | |
 | Stack / framework | {{STACK}} |
 | Backend repo path | |
-| Sibling client repo path | the web, desktop or extension client's repo, where one exists — whichever client's `DESIGN.md` came first is the brand's source |
+| Sibling client repo path | another client of this product, where one exists: a different platform, or another audience's app — whichever client's `DESIGN.md` came first is the brand's source |
 | Backend stack | |
 | Backend OpenAPI spec | URL, once the backend is built — blank until then |
 | Staging API URL | |
