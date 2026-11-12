@@ -31,7 +31,7 @@ The unit of work is a **feature area** in the first phase and a **feature** in e
 - **Design** — every screen the unit's flows need, designed on the canvas — or, where a designer supplies them, mapped to the inventory and reviewed — iterated with me, and approved. Ends with the unit marked `Designed`.
 - **Build** — the approved screens built for both platforms with realistic mock data through the real data layer, tested and verified against the designs (`Built`), then specced for the backend (`Specced`).
 
-The two stages can run in one session or in two; the tracker says where a unit is. By default a session takes one unit through whichever stage comes next. A **whole-phase build** takes every `Designed` unit through the build stage in one session (Section 6); design is never batched across units, because every batch needs my eyes.
+The two stages can run in one session or in two; the tracker says where a unit is. By default a session takes one unit through whichever stage comes next. A **whole-phase design** takes every `Ready` unit through the design stage in one session, each unit approved before the next (Section 6); a **whole-phase build** then takes every `Designed` unit through the build stage in one session (Section 7).
 
 Three docs define what a unit's screens must do, found through the `CLAUDE.md` documentation map:
 
@@ -124,7 +124,7 @@ Screens are built one unit at a time; the navigation they sit in is not. Before 
 - **The shell:** the tab bar and headers per `DESIGN.md`, where search, notifications and the account entry live, and how the shell behaves on a tablet running the phone layout.
 - **Global patterns the units will share:** the list screen anatomy, the detail screen anatomy, the create/edit pattern (screen, modal or sheet), the confirmation pattern, where errors and toasts appear, pull to refresh, the permission-request pattern, the offline state.
 
-Design the shell and one example of each global pattern on the canvas, and **wait for my approval**; write the canvas link in the tracker's Phase 0 notes. Where the `Designs` row says the screens are supplied, the shell and the global patterns are the designer's too: read them from the file or from the exports in `docs/design/screens/phase-0/`, review them as Step 4's supplied-designs block says, and write the file's link in the Phase 0 notes. The navigation model and the route map are still derived here from the flows, and the designer's shell is checked against them. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker (created at the session's opening, Section 8) records it as done in its notes, and it is delivered as a PR per Step 12.
+Design the shell and one example of each global pattern on the canvas, and **wait for my approval**; write the canvas link in the tracker's Phase 0 notes. Where the `Designs` row says the screens are supplied, the shell and the global patterns are the designer's too: read them from the file or from the exports in `docs/design/screens/phase-0/`, review them as Step 4's supplied-designs block says, and write the file's link in the Phase 0 notes. The navigation model and the route map are still derived here from the flows, and the designer's shell is checked against them. Then build the shell in `components/shared/` and the `(tabs)` layout, replacing the placeholders `/mobile-setup` left, and the route groups' real layouts, before the first unit. Record the navigation model and the route map in `docs/design/navigation.md`. Phase 0 ends like a unit: its tests pass, the tracker (created at the session's opening, Section 9) records it as done in its notes, and it is delivered as a PR per Step 12.
 
 ---
 
@@ -135,7 +135,7 @@ Design the shell and one example of each global pattern on the canvas, and **wai
 #### Step 1 — Select and scope
 
 - Run `pnpm docs:pull` so the docs are current, and commit what it changed.
-- Confirm in the UI tracker that the unit is `Ready` and the one above it is at least `Designed` (or, in whole-phase build mode, that every unit in scope is `Designed`). **Never design from a `Draft` row.** If the tracker does not exist yet, create it now from `feature-areas` (first phase) or the backend's `docs/phase-{n}/implementation-order.md` (later phase), one row per unit, all `Draft` until their docs exist, and commit it. At the start of every session, advance any `Draft` row whose Readiness condition is now met to `Ready` with the date — first phase: its business rules and app flows exist; later phase: the review has settled its rules and flows with no open founder decision (the backend's `implementation-order.md` may still read `Draft` until its screens are reviewed; that is expected, since this repo writes the screens).
+- Confirm in the UI tracker that the unit is `Ready` and the one above it is at least `Designed` (or, in whole-phase design mode, that every unit in scope is `Ready`; in whole-phase build mode, that every unit in scope is `Designed`). **Never design from a `Draft` row.** If the tracker does not exist yet, create it now from `feature-areas` (first phase) or the backend's `docs/phase-{n}/implementation-order.md` (later phase), one row per unit, all `Draft` until their docs exist, and commit it. At the start of every session, advance any `Draft` row whose Readiness condition is now met to `Ready` with the date — first phase: its business rules and app flows exist; later phase: the review has settled its rules and flows with no open founder decision (the backend's `implementation-order.md` may still read `Draft` until its screens are reviewed; that is expected, since this repo writes the screens).
 - Read everything in Section 2.1 for this unit.
 - In a later phase: read the existing screen specs for every area the feature touches, and open the built screens' code, so every change is made to the real current screen. Apply the review's frontend actions.
 - Identify **prerequisites**: screens from other units this unit links to (a detail screen a list links into), shared components that must exist, auth states the flows assume. If a prerequisite is unbuilt, say so before starting rather than stubbing around it.
@@ -185,7 +185,7 @@ When I approve the unit's designs:
 1. Export every screen and material state to `docs/design/screens/{unit}/` — through the Figma MCP where the designs live there — named per `documentation-conventions`. Where the designs are the designer's exports, the folder already holds them: name each after its inventory row, remove what was superseded and any screen whose Step 2 question I answered as not this unit's, and confirm every screen and state is present. The exports are the record of what I approved. Where the designs were made on the canvas or supplied in Figma, write its link in the unit's tracker notes. The canvas or file can still be edited, but an edit counts only once I approve it and its screens are exported again.
 2. Record under the tracker row anything the designs decided that the specs must carry: fields shown on a screen that the flow implied but did not list, actions that moved between screens, states added.
 3. Mark the unit `Designed` with the date.
-4. Commit. If the session continues into the build stage, go to Step 6. Otherwise report — the screens designed with their states, the references used, the decisions recorded under the tracker row, and any question still open — and stop. The build stage starts in a fresh session from this checkpoint.
+4. Commit. In whole-phase design mode, go on to the next unit; otherwise, if the session continues into the build stage, go to Step 6; otherwise report — the screens designed with their states, the references used, the decisions recorded under the tracker row, and any question still open — and stop. The build stage starts in a fresh session from this checkpoint.
 
 ### Stage B — Build
 
@@ -263,7 +263,18 @@ When the walk passes, mark the unit `Built` with the date and commit.
 
 ---
 
-## 6. Whole-Phase Build Mode
+## 6. Whole-Phase Design Mode
+
+Designs every `Ready` unit of the phase through Stage A in one session, in tracker order. Each unit is still approved before the next begins; what is batched is the work around the approvals.
+
+1. **Step 1 once for the phase, then the inventory of every unit** (Step 2, each confirmed) — the run covers `Ready` units in tracker order, after any already `Designed`, and ends before the first `Draft` — so shared components, cross-unit flows and open questions are settled before any screen is designed. Keep the approved inventories and my answers in one working note for the run.
+2. **One reference plan for the phase**, merged from the inventories, and one research pass (Step 3): each screen type once, reused across units, its notes in the same working note. Supplied designs skip this, as in Stage A.
+3. **Design unit by unit** (Steps 4 and 5): present, iterate and approve one unit's screens, export and commit them as Step 5 says, compact, then the next — re-reading the working note and the earlier units' exports first. A unit I reject stops the run with a report; with supplied designs, a unit whose findings wait on the designer is reported and the run goes on.
+4. **One report** — Step 5's report for every unit, and any question still open — then the build, in whole-phase build mode, normally in a fresh session.
+
+---
+
+## 7. Whole-Phase Build Mode
 
 Builds every `Designed` unit of the phase through Stage B in one session, in tracker order. My input moves to the start and the end.
 
@@ -274,7 +285,7 @@ Builds every `Designed` unit of the phase through Stage B in one session, in tra
 
 ---
 
-## 7. Definition of Done
+## 8. Definition of Done
 
 A unit is not done until all of the following are true:
 
@@ -294,11 +305,11 @@ If any box cannot be ticked, say which and why rather than reporting the unit co
 
 ---
 
-## 8. Opening the session
+## 9. Opening the session
 
 Before Step 1, in a few lines:
 
-1. **State the phase, the unit and the stage** — design, build, or both; or whole-phase build. If I haven't said, take the next unit in the tracker through its next stage.
+1. **State the phase, the unit and the stage** — design, build, or both; or whole-phase design or build. If I haven't said, take the next unit in the tracker through its next stage.
 2. **State the project values** from `CLAUDE.md` that change what you do: production status, tablet support, which native capabilities are on, whether this unit's designs are supplied or designed here, whether the canvas and image generation are available, where design references come from, which stock photo providers are configured. Ask for any that are missing.
 3. **Say whether Phase 0 is done.** If the information architecture and shell are not approved and built, we start there — after creating the UI tracker if it does not exist yet, as Step 1 describes.
 
