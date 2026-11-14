@@ -20,6 +20,7 @@
 | Analytics events *(with the analytics rule)* | `docs/analytics-events.md` |
 | Infra setup | `docs/infra/` |
 | Release records | `docs/release/` |
+| Blueprint guides *(this client's; the backend's arrives with the docs sync)* | `docs/blueprint/` |
 
 ## Audiences and clients
 

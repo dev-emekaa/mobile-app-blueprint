@@ -28,6 +28,7 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 | Phase build order | `docs/phase-{n}/implementation-order.md` | The backend's order and readiness per feature, which the UI tracker follows |
 | Phase features | `docs/phase-{n}/features/{feature}/` | The feature's rules and flows until promotion — and its screen specs, which this repo writes (see below) |
 | Integration index | `docs/phase-{n}/integration/` | Per feature, the endpoints it added, linking to canonical api-docs |
+| Backend blueprint guide | `docs/blueprint/backend-blueprint.md` | How the backend's skills work and what they hand over, read when a question goes beyond this repo |
 
 **Docs this repo owns.** Written by this repo's skills; the backend reads some of them.
 
