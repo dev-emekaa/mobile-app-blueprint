@@ -64,7 +64,8 @@ Present each area's reconstructed docs with their citations — its tracker row,
 1. `CLAUDE.md`: the documentation map with a row for `docs/adoption-report.md`, which audience and client this repo is, and the project configuration from the inventory — **Production status** first, since the template defaults to *not yet launched*, the API and app URLs, the **Stack / framework** row with the verdict after it, `{what it is} — {blueprint's stack: all skills apply | not the blueprint's: documentation skills only; see docs/adoption-report.md}`, and the **Design system** row as `/design-system` fills it.
 2. **Push the specs and the handoff:** commit each approved spec file, then `pnpm docs:push --specs {file}` for it, one push per area, so the backend holds the approved version and not the marked draft; then commit the handoff file and `pnpm docs:push --handoff`, so the backend's queue holds only entries I have seen. Tell me the backend can run its review on the specs, as `/mobile-build` does, and `/backend-issue-fix` on the entries. A spec not yet approved is not pushed.
 3. **`docs/adoption-report.md`:** the inventory, the stack verdict, what was written and from where (each document's citations), the backend contract check, the foundation gaps, the deviations with their routing, and what I should still verify by hand. Dated. It names environment variables and services, never their values.
-4. Commit the report, push the branch, and give me the link to create the PR — never create it yourself.
+4. **`docs/issues.md`:** every item the report routes to `/mobile-issue-fix`, as an entry, so the next fix session starts from them.
+5. Commit the report, push the branch, and give me the link to create the PR — never create it yourself.
 
 ## Report
 

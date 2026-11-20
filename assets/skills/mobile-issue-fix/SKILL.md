@@ -28,7 +28,7 @@ This skill handles any change to what already exists:
 
 It does not design, build or integrate a new unit: that is `/mobile-build` and `/mobile-integrate`. A "fix" that needs a new screen is routed there. Preparing and promoting a store release is `/mobile-release`.
 
-I will send one issue or a list. For each, follow Section 3.
+`docs/issues.md` holds the issues logged before this session: list its `open` entries first, then take the one issue or list I send. For each, follow Section 3.
 
 ## 2. Constraints
 
@@ -82,6 +82,8 @@ Walk every flow the fix touches, in mock mode or against staging as the issue re
 
 For each issue: what it was, the root cause, what changed, the tests added, the docs updated, what the user will notice, and **how it ships** — over the air, or a store build through `/mobile-release`. Then a PR: branch off `origin/main`, push, give me the link. Never create the PR yourself. When I report the merge — in this session or the next — confirm that Pipeline 2's run on it passed, including its Maestro suite.
 
+An issue that came from `docs/issues.md` moves to `docs/issues-resolved.md` with the date and one line — on the fix, or on where it went when it was reclassified or could not be reproduced.
+
 ## 4. Adopting a Backend Handoff
 
 A client handoff message from `/backend-issue-fix` lists items tagged `FIXED` / `NEW` / `UPDATED` / `REMOVED`, grouped by feature area, with an "Action required on the client side" section split into **Breaking** and **Deprecated**, and the list of docs updated.
@@ -97,7 +99,7 @@ A client handoff message from `/backend-issue-fix` lists items tagged `FIXED` / 
 
 ## 5. Definition of Done
 
-- [ ] Every issue reproduced and classified; backend issues logged, doc errors reported.
+- [ ] Every issue reproduced and classified; backend issues logged, doc errors reported, fixed entries moved out of `docs/issues.md`.
 - [ ] Every client fix has a test that failed before and passes after.
 - [ ] The suite passes: this unit's and everything sharing the changed components; the fix was looked at on both platforms.
 - [ ] Every doc the fix touched is updated and pushed, with no mention of the issue.

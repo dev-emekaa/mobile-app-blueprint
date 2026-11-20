@@ -82,7 +82,7 @@ What may be kept on the device, and where:
 - **Install scripts are off by default** (pnpm's `allowBuilds` map in `pnpm-workspace.yaml`, with `strictDepBuilds` on) and enabled per package with a reason.
 - **`pnpm audit` runs in CI**; a high or critical finding blocks the merge unless the PR records why it does not apply.
 - **GitHub Actions are pinned to a commit SHA**, not a tag; EAS credentials and the Expo token are exposed only to the jobs that need them, never to pull requests from forks.
-- **Dependabot or Renovate** opens update PRs that go through the same checks as any other.
+- **Dependabot or Renovate** opens one grouped PR per ecosystem for the week's minor and patch updates and one PR per major — a breaking change is reviewed alone, never folded into a grouped PR — all through the same checks as any other. The packages the Expo SDK pins are left to the SDK upgrade, not to the bot.
 - **Old builds keep running.** A released build may call the backend for months, so a change that would break one is coordinated through the backend's deprecation and minimum-version machinery (`ci-cd` → Releasing alongside the backend), never shipped and hoped for.
 
 ## Errors and logging

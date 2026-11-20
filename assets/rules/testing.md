@@ -32,7 +32,7 @@ Coverage is read to find untested logic, never enforced as a percentage.
 | **Device** | — | Jest's React Native environment | An iOS simulator and an Android emulator in CI | The device matrix below; a store build is checked on real devices by `/mobile-release` |
 
 - **Automated tests never touch production data.** Production smoke tests are read-only, with a dedicated low-privilege account, on the production-environment `e2e` build.
-- **E2E tests depend on the backend's seed.** They use the records the seed marks as disposable and clean up what they create; they never reseed staging on their own, because manual QA and the backend's own verification share it. A reseed is asked for, through the backend's reseed dev-tool endpoint, when the seed has drifted.
+- **E2E tests depend on the backend's seed.** They use the records `docs/seed.md` lists as disposable and clean up what they create; they never reseed staging on their own, because manual QA and the backend's own verification share it. A reseed is asked for, through the backend's reseed dev-tool endpoint, when the seed has drifted.
 - **Integration tests start from the shared mock handlers** so a screen is tested against the same shapes it was built on; a test that needs a different response overrides the one handler it needs.
 
 ## Unit tests

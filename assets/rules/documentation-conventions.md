@@ -24,6 +24,7 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 | App flows | `docs/app-flows/` | Every journey, step by step: the screens each flow needs |
 | API docs | `docs/api-docs/` | The integration reference, per feature area |
 | API testing | `docs/api-testing/` | How to exercise each endpoint against any environment |
+| Seed manifest | `docs/seed.md` | The dev and staging seed: accounts and the shared password, roles, states, disposable records, which account walks which flow, how to reseed |
 | Phase inputs and review | `docs/phase-{n}/product-docs/`, `docs/phase-{n}/review/` | The FRD, and the review's actions for the frontend |
 | Phase build order | `docs/phase-{n}/implementation-order.md` | The backend's order and readiness per feature, which the UI tracker follows |
 | Phase features | `docs/phase-{n}/features/{feature}/` | The feature's rules and flows until promotion — and its screen specs, which this repo writes (see below) |
@@ -43,6 +44,7 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 | Image prompts | `docs/design/images.md` | `/mobile-build`, only when an image has to be generated outside the session |
 | Screen specs | `docs/screen-specs/` (first phase) · `docs/phase-{n}/features/{feature}/screen-specs-{feature}.md` (later) | `/screen-specs`, from the built UI. See ownership below |
 | Backend issues | `docs/integration-handoff/backend-issues-{client}.md` · its `-resolved` archive — one file per client, this repo's being `backend-issues-mobile.md` | `/mobile-integrate` and `/mobile-issue-fix`; `/mobile-build` for a flow or rule a design shows to be wrong; the backend appends resolutions |
+| Issues | `docs/issues.md` · its `-resolved` archive | Whichever skill finds one, or me; `/mobile-issue-fix` resolves. See below |
 | Analytics events | `docs/analytics-events.md` | `/mobile-setup`, `/mobile-build` and `/mobile-issue-fix`, where the `analytics` rule is installed |
 | Infra setup | `docs/infra/infra-setup.md` | `/mobile-setup`: EAS, the store accounts, credentials, secrets, the steps only a person can do |
 | Adoption report *(only in a project the blueprint didn't start)* | `docs/adoption-report.md` | `/mobile-adopt`: what it found, wrote and flagged. Docs it reconstructed carry a `Reverse-engineered … — verify` line until approved |
@@ -53,6 +55,8 @@ Universal and project-agnostic, for the mobile client's repo. Project specifics 
 This repo has no `api-rbac` register. When `/screen-specs` runs here, an endpoint is written as `METHOD /path` only when it appears in the api-docs that arrived from the backend; everything else is `pending`.
 
 **The backend-issues file is shared, and per client.** Each client repo writes only its own file — this one writes `backend-issues-mobile.md` — so two clients never contend over one file. This repo pushes it; the backend's `/backend-issue-fix` reads its open entries and appends each resolution, and the next `docs:pull` brings the file back. A push of it first checks that the backend's copy is the version this repo last pulled, so an appended resolution is never overwritten. The list of doc files the backend's issue-fix skill asks to be copied to the client repo is exactly what `docs:pull` brings, so nothing is copied by hand.
+
+**`docs/issues.md` is this repo's own list** — an issue of this repo found in a session that does not fix it, whoever found it. One the backend must fix goes in the handoff file, not here; one fixed on the spot is never logged. Entries follow the handoff entry's shape: `### {ISSUE-ID} · {screen or flow}`, then **Found** (the date, and the skill or session), **Expected**, **Observed**, **Status** `open`. `/mobile-issue-fix` reads the open entries at its start and, on a fix, moves the entry to `docs/issues-resolved.md` with the date and one line. The sync never moves this file.
 
 ## Folder and file names
 
@@ -86,6 +90,6 @@ The gate for `Integrated` work is the backend's: a unit is integrated only once 
 - Before working on a unit, read its business rules, app flows and, where they exist, its screen specs and api-docs — plus `business-rules-shared.md` where it exists.
 - Before designing or building any screen, read `DESIGN.md`. Before designing a later phase's screens, also read the existing screen specs and the built screens' code, so every existing screen is known.
 - Existing drafts are unvalidated: take stock of what exists first, and fix files rather than regenerating them.
-- Docs never mention issues, resolutions, decisions or the review process.
+- Docs never mention issues, resolutions, decisions or the review process; those live in the review docs, the handoff files and `docs/issues.md`.
 - Docs move between the repos only with the sync scripts `/mobile-setup` installs. `pnpm docs:pull` brings the backend's docs here, including the backend's copy of the screen specs and the backend-issues file. `pnpm docs:push --specs {file}` sends one screen-spec file; `pnpm docs:push --handoff` sends this client's two backend-issues files. The backend repo is a clone on this machine: `git pull` it before `docs:pull`, and commit there what `docs:push` writes. Nothing is copied by hand, and a doc is never edited by hand to match what the code does.
 - A sync is committed on its own: commit before pushing, and commit what a pull changed before working on it.

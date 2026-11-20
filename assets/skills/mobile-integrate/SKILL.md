@@ -146,17 +146,17 @@ Follow `testing`.
 
 - **Integration tests** run on MSW handlers now written from the api-docs' shapes (the updated fixtures), covering each screen's states including the error responses the api-docs define.
 - **Unit tests** for any schema or formatter that changed.
-- **E2E**: the unit's primary Maestro flow now runs on the staging build against the real backend with the seeded users; the api-testing guide's variables tell you which users and records exist.
+- **E2E**: the unit's primary Maestro flow now runs on the staging build against the real backend with the seeded users; `docs/seed.md` tells you which users and records exist.
 - Run every suite, including earlier units'. All green before Step 7.
 
 ### Step 7 — Verify against staging
 
 Do not make me test manually.
 
-1. Ask the backend to reseed staging (or fire the reseed endpoint from the api-testing guide if I say so), and run the development build in **direct** mode against the staging API (`pnpm dev:staging`). The mode is one global switch, so walk this unit's flows in direct mode and stop where a flow crosses into an un-integrated unit's screens or a retained cross-unit mock; walk those crossings in a second pass in mock mode, whose passthrough still sends this unit's calls to the real backend.
+1. Ask the backend to reseed staging (or fire the reseed endpoint `docs/seed.md` names if I say so), and run the development build in **direct** mode against the staging API (`pnpm dev:staging`). The mode is one global switch, so walk this unit's flows in direct mode and stop where a flow crosses into an un-integrated unit's screens or a retained cross-unit mock; walk those crossings in a second pass in mock mode, whose passthrough still sends this unit's calls to the real backend.
 2. Walk every flow of the unit on the iOS simulator and the Android emulator (driving the app with Maestro and capturing screenshots, or with the simulator and emulator tools where available), signed in as each role the flows name, happy paths and the error paths the rules define, plus the background behaviours the api-docs describe (what the UI shows after a job runs, what a push notification opens), and airplane mode mid-flow for the offline states.
 3. **Present the walk in the chat, flow by flow:** each screen, each platform, the calls it made (method and path, tokens shortened), what the UI showed, and whether it matched the flow and the design. End with everything that failed.
-4. For each failure: client-side → state the fix and **wait for my approval** before implementing; backend-side → Step 5.
+4. For each failure: client-side → state the fix and **wait for my approval** before implementing, or log it in `docs/issues.md` if I defer it; backend-side → Step 5.
 
 ### Step 8 — Update the tracker and report
 
@@ -166,7 +166,7 @@ Do not make me test manually.
   - **Endpoints integrated**, grouped by screen; cross-unit endpoints marked.
   - **Mocks remaining**, each with the reason.
   - **Gaps A and B**, and orphan endpoints flagged.
-  - **Backend issues logged**, with their status.
+  - **Backend issues logged**, with their status, and any client-side failure deferred to `docs/issues.md`.
   - **Tests** — counts per layer, and that earlier units' suites pass.
   - **Verification** — the staging walk passed, with what it caught; **the backend commit verified** (from the backend's health endpoint), which is the backend's production sign-off for this unit.
 - **Deliver it as a PR.** Branch off `origin/main`, push, give me the link. Never create the PR yourself. Merging deploys to staging as an update, where the unit now runs against the real backend.

@@ -8,6 +8,7 @@
 | App flows *(from the backend)* | `docs/app-flows/` |
 | API docs *(from the backend)* | `docs/api-docs/` |
 | API testing *(from the backend)* | `docs/api-testing/` |
+| Seed manifest *(from the backend)* | `docs/seed.md` |
 | Phase folders *(from the backend, plus this repo's UI tracker and the phase's screen specs)* | `docs/phase-{n}/` |
 | UI tracker, first phase | `docs/ui-implementation-order.md` |
 | Design system | `DESIGN.md` (project root) |
@@ -17,6 +18,7 @@
 | Image prompts | `docs/design/images.md` |
 | Screen specs | `docs/screen-specs/` |
 | Backend issues handoff | `docs/integration-handoff/` |
+| Issues | `docs/issues.md` |
 | Analytics events *(with the analytics rule)* | `docs/analytics-events.md` |
 | Infra setup | `docs/infra/` |
 | Release records | `docs/release/` |

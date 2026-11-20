@@ -63,7 +63,7 @@ npx github:dev-emekaa/mobile-app-blueprint init --force
 
 - Skills, rules and the guide in `docs/blueprint/` are overwritten, including any edits you made — run it on a clean working tree and read the diff before committing.
 - `CLAUDE.md` is never overwritten: it holds your project's values.
-- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.4.4 init`. If an update doesn't seem to land: `npm cache clean --force`.
+- To pin a version: `npx github:dev-emekaa/mobile-app-blueprint#v1.4.5 init`. If an update doesn't seem to land: `npm cache clean --force`.
 
 ---
 
@@ -115,7 +115,7 @@ Replaces the mocks with the real backend once its API docs land: checks the scre
 **Writes** the integration, the backend-issues file
 
 ### `/mobile-issue-fix`
-Changes what already exists: reproduces the issue on both platforms, writes a failing test, fixes it, updates the docs it touched, says whether the fix can go out as an update or needs a store build, and adopts changes the backend hands over.
+Changes what already exists — the issues you give it and the ones logged in `docs/issues.md`: reproduces the issue on both platforms, writes a failing test, fixes it, updates the docs it touched, says whether the fix can go out as an update or needs a store build, and adopts changes the backend hands over.
 **Writes** the fix, its tests, the docs it changes
 
 ### `/mobile-release`
@@ -159,7 +159,7 @@ Loaded by Claude Code at the start of every session — except `ci-cd.md`, which
   ```
 
   `git pull` the backend repo before pulling, and commit what you push into it.
-- **Issues:** `/mobile-integrate` logs what the backend must fix in `backend-issues-mobile.md`; the backend's `/backend-issue-fix` fixes it and hands back a message that `/mobile-issue-fix` adopts.
+- **Issues:** `/mobile-integrate` logs what the backend must fix in `backend-issues-mobile.md`; the backend's `/backend-issue-fix` fixes it and hands back a message that `/mobile-issue-fix` adopts. What this app must fix itself, when it isn't fixed on the spot, goes in `docs/issues.md` for `/mobile-issue-fix`.
 - **The backend's side:** it must meet `security.md` → Backend contract — tokens, push registration, the minimum-version check, account deletion and the deep-link files. Backend Blueprint v1.2.0 or later does.
 - **Before the first store release:** install the Backend Blueprint with `--store-client` and set its `Client release status`. From then on it stops making changes that would break versions already on people's phones.
 - **Another client for the same product:** each client repo is separate. `/design-system` takes the brand from the first client's `DESIGN.md`, so the product looks like itself everywhere.

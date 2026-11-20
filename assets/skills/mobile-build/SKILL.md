@@ -79,6 +79,7 @@ Nothing is designed that isn't traceable to a flow or a rule. If a screen seems 
 | Tests | Integration tests per screen state, unit tests for logic, a Maestro flow for the unit's primary journey. | Build. |
 | Screen specs | `docs/screen-specs/screen-specs-{{unit}}.md` (or the phase file), written by `/screen-specs` from the built screens. | After the build. |
 | Backend issues | `docs/integration-handoff/backend-issues-mobile.md` — one entry per flow or rule a supplied design shows to be wrong, in `/mobile-integrate` Step 5's format. | Step 4, supplied designs only. |
+| Issues | `docs/issues.md` — one entry per problem seen in an earlier unit's screens, in the shape `documentation-conventions` gives. | Step 10, when one is noticed. |
 
 ---
 
@@ -238,7 +239,7 @@ Follow `testing` for structure and approach.
 
 #### Step 10 — Verify against the designs
 
-Walk every flow on the iOS simulator and the Android emulator in mock mode — driving the app with Maestro and capturing screenshots, or with the simulator and emulator tools where available — screen by screen, state by state, and compare each with its approved export. Check the smallest phone, dark mode, 200% font scaling, the keyboard through each form, the Android back button on every screen, a tablet in landscape for the adaptive baseline, and the accessibility labels (the simulator's Accessibility Inspector, or the labels the test queries find). **Present the walk in the chat, flow by flow:** each screen, each platform, what was checked, and whether it matched. End with everything that did not match, and fix it before Step 11.
+Walk every flow on the iOS simulator and the Android emulator in mock mode — driving the app with Maestro and capturing screenshots, or with the simulator and emulator tools where available — screen by screen, state by state, and compare each with its approved export. Check the smallest phone, dark mode, 200% font scaling, the keyboard through each form, the Android back button on every screen, a tablet in landscape for the adaptive baseline, and the accessibility labels (the simulator's Accessibility Inspector, or the labels the test queries find). **Present the walk in the chat, flow by flow:** each screen, each platform, what was checked, and whether it matched. End with everything that did not match, and fix it before Step 11. A problem noticed in an earlier unit's screens along the way is an entry in `docs/issues.md`, not a fix made here.
 
 If a design cannot be built as approved (a layout that does not survive real content lengths, a state the design missed), say what and propose the change; a change to an approved design is raised, not made quietly.
 

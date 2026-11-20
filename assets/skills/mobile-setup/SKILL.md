@@ -88,7 +88,7 @@ Wired once, used by the builds:
 
 - **The three GitHub Actions workflows `ci-cd` defines:** PR checks (with the `e2e` label path), the staging deploy with the fingerprint comparison, EAS Build and Submit or EAS Update, the `staging-current` tag, the Maestro run through EAS Workflows and the source-map upload, the `hotfix/*` triggers, and the production deploy with its release-owner check, SHA-only `commit` input, `version` validation, the smoke test on the repacked `e2e` build before anything reaches users, the 10% rollout and release tags.
 - **The EAS Workflows file** for the `fingerprint`, `get-build`, `repack` and `maestro` jobs and anything else `ci-cd` runs on EAS rather than on GitHub. Check EAS's current documentation for the CLI flags and the job names and inputs; they change.
-- **Dependabot or Renovate** configuration, and the security policies `security` → Updates and supply chain requires.
+- **Dependabot or Renovate** configuration — weekly, one grouped PR per ecosystem for minor and patch updates and one PR per major, across packages and GitHub Actions, with `expo`, `expo-*`, `react-native` and the other packages the SDK pins (`npx expo install --check` lists them) left out, because the SDK upgrade moves them together — and the security policies `security` → Updates and supply chain requires.
 
 ## Step 10 — Docs sync with the backend
 
